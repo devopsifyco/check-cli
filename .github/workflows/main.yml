@@ -54,7 +54,7 @@ jobs:
           path: dist/
 
       - name: Set up GitHub CLI
-        uses: actions/setup-gh@v4
+        uses: cli/gh-action@v2
 
       - name: Check if release exists
         id: check_release
