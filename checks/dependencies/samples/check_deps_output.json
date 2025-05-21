@@ -1,0 +1,17 @@
+{
+    "dependencies": [
+      {
+        "name": "firefox",
+        "version": "131.0.1",
+        "manager": "npm"
+      },
+      {
+        "name": "typescript",
+        "version": "5.3.3",
+        "manager": "npm",
+        "tags": [
+          "dev"
+        ]
+      }
+    ]
+  }

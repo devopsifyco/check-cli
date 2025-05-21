@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "name": "DemoApp",
+  "dependencies": {
+    "Microsoft.AspNetCore.App": "7.0.14",
+    "Microsoft.EntityFrameworkCore": "7.0.14",
+    "Microsoft.EntityFrameworkCore.SqlServer": "7.0.14",
+    "AutoMapper": "12.0.1",
+    "FluentValidation": "11.8.1",
+    "MediatR": "12.2.0",
+    "Serilog": "3.1.1",
+    "Swashbuckle.AspNetCore": "6.5.0"
+  },
+  "frameworks": {
+    "net7.0": {
+      "dependencies": {
+        "Microsoft.AspNetCore.App": {
+          "version": "7.0.14"
+        },
+        "Microsoft.EntityFrameworkCore": {
+          "version": "7.0.14"
+        },
+        "Microsoft.EntityFrameworkCore.SqlServer": {
+          "version": "7.0.14"
+        },
+        "AutoMapper": {
+          "version": "12.0.1"
+        },
+        "FluentValidation": {
+          "version": "11.8.1"
+        },
+        "MediatR": {
+          "version": "12.2.0"
+        },
+        "Serilog": {
+          "version": "3.1.1"
+        },
+        "Swashbuckle.AspNetCore": {
+          "version": "6.5.0"
+        }
+      }
+    }
+  },
+  "tools": {
+    "Microsoft.EntityFrameworkCore.Tools": "7.0.14",
+    "Microsoft.VisualStudio.Web.CodeGeneration.Tools": "7.0.11"
+  },
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  },
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "Views",
+      "appsettings.json",
+      "web.config"
+    ]
+  }
+} 
