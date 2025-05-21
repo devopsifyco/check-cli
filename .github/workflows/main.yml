@@ -2,7 +2,7 @@ name: Build All Binaries
 
 on:
   push:
-    branches: [ q2 ]
+    branches: [ master ]
   workflow_dispatch:
     inputs:
       bump:
