@@ -21,7 +21,7 @@
         <java.version>11</java.version>
         <lombok.version>1.18.22</lombok.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <postgresql.version>42.3.3</postgresql.version>
+        <postgresql.version>42.3.9</postgresql.version>
         <springdoc.version>1.6.9</springdoc.version>
     </properties>
 
