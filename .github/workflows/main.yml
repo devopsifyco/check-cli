@@ -121,8 +121,11 @@ jobs:
           upload_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$api_url" | grep -o '"upload_url": *"[^"]*"' | sed 's/"upload_url": *"\([^"]*\)"/\1/' | sed 's/{?name,label}//')
           echo "upload_url=$upload_url" >> $GITHUB_OUTPUT
 
+      - name: Debug upload_url
+        run: echo "Upload URL: ${{ steps.get_upload_url.outputs.upload_url }}"
+
       - name: Upload check.exe
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -132,7 +135,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload check-linux-amd64
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -142,7 +145,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload check-linux-arm64
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -152,7 +155,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload check-macos-intel
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -162,7 +165,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload check-macos-arm64
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
