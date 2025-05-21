@@ -17,6 +17,38 @@ A versatile command-line tool for system checks and dependency management.
 
 Download the latest release for your platform from the releases page.
 
+## Building from Source
+
+You can build the CLI tool locally for all supported platforms using Docker. This will generate executables for Windows, Linux (amd64/arm64), and macOS (Intel/ARM).
+
+### On Windows
+
+Run:
+```bat
+build\windows.bat
+```
+
+### On Linux or macOS
+
+Run:
+```bash
+bash build/linux.sh
+```
+
+or, after making it executable:
+
+```bash
+chmod +x build/linux.sh
+./build/linux.sh
+```
+
+The built executables will be placed in the `dist` directory:
+- check.exe (Windows)
+- check-linux-amd64 (Linux AMD64)
+- check-linux-arm64 (Linux ARM64)
+- check-macos-intel (macOS Intel)
+- check-macos-arm64 (macOS ARM64)
+
 ## Commands
 
 ### `deps` - Dependency Check
