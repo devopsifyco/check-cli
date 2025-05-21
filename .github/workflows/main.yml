@@ -172,4 +172,4 @@ jobs:
           upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check-macos-arm64
           asset_name: check-macos-arm64
-          asset_content_type: application/octet-stream 
+          asset_content_type: application/octet-stream
