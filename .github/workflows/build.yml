@@ -3,6 +3,7 @@ name: Build All Binaries
 on:
   push:
     branches: [ github-action ]
+    tags: [ 'v*' ]  # Trigger on version tags like v1.0.0
   pull_request:
     branches: [ github-action ]
   workflow_dispatch:
@@ -39,4 +40,36 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: check-binaries
-          path: dist/ 
+          path: dist/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: check-binaries
+          path: dist/
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload binaries to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/
+          asset_name: check-binaries.zip
+          asset_content_type: application/zip 
