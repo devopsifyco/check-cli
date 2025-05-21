@@ -2,9 +2,9 @@ name: Build All Binaries
 
 on:
   push:
-    branches: [ main ]
+    branches: [ github-action ]
   pull_request:
-    branches: [ main ]
+    branches: [ github-action ]
   workflow_dispatch:
 
 jobs:
