@@ -64,12 +64,52 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload binaries to Release
+      - name: Upload check.exe
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/
-          asset_name: check-binaries.zip
-          asset_content_type: application/zip 
+          asset_path: dist/check.exe
+          asset_name: check.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload check-linux-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/check-linux-amd64
+          asset_name: check-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload check-linux-arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/check-linux-arm64
+          asset_name: check-linux-arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload check-macos-intel
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/check-macos-intel
+          asset_name: check-macos-intel
+          asset_content_type: application/octet-stream
+
+      - name: Upload check-macos-arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/check-macos-arm64
+          asset_name: check-macos-arm64
+          asset_content_type: application/octet-stream 
