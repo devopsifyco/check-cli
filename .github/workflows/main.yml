@@ -64,7 +64,7 @@ jobs:
           key: dist-${{ github.sha }}
 
       - name: Set up GitHub CLI
-        uses: cli/gh-action@v2
+        uses: github/gh-cli-action@v2
 
       - name: Check if release exists
         id: check_release
