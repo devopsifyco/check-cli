@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Version>1.0.0</Version>
+    <Authors>Example Author</Authors>
+    <Company>Example Company</Company>
+  </PropertyGroup>
+
+  <!-- Package versions centralized in properties -->
+  <PropertyGroup>
+    <AspNetCoreVersion>7.0.14</AspNetCoreVersion>
+    <EFCoreVersion>7.0.14</EFCoreVersion>
+    <SwaggerVersion>6.5.0</SwaggerVersion>
+    <SerilogVersion>3.1.1</SerilogVersion>
+    <AutoMapperVersion>12.0.1</AutoMapperVersion>
+    <FluentValidationVersion>11.8.1</FluentValidationVersion>
+    <MediatRVersion>12.2.0</MediatRVersion>
+  </PropertyGroup>
+
+  <!-- Main dependencies -->
+  <ItemGroup>
+    <!-- ASP.NET Core packages -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    
+    <!-- Entity Framework Core -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFCoreVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCoreVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCoreVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    
+    <!-- API Documentation -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwaggerVersion)" />
+    
+    <!-- Logging -->
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    
+    <!-- Common Libraries -->
+    <PackageReference Include="AutoMapper" Version="$(AutoMapperVersion)" />
+    <PackageReference Include="AutoMapper.Collection" Version="9.0.0" />
+    <PackageReference Include="FluentValidation" Version="$(FluentValidationVersion)" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="MediatR" Version="$(MediatRVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!-- Development dependencies -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
+
+  <!-- Test dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+  </ItemGroup>
+
+  <!-- Project references example -->
+  <ItemGroup>
+    <ProjectReference Include="..\Sample.Core\Sample.Core.csproj" />
+    <ProjectReference Include="..\Sample.Infrastructure\Sample.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project> 

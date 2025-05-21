@@ -1,0 +1,31 @@
+# Web Framework
+Django==4.2.20
+Flask==3.0.0
+fastapi==0.104.1
+uvicorn==0.24.0
+
+# Data Science & Machine Learning
+numpy==1.26.2
+pandas==2.1.3
+scikit-learn==1.5.1
+tensorflow==2.14.0
+
+# Database
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.9
+pymongo==4.6.3
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Utilities
+requests==2.32.2
+python-dotenv==1.0.0
+pyyaml==6.0.1
+black==24.3.0
+isort==5.12.0
+
+# API Documentation
+swagger-ui-bundle==0.0.9
+pydantic==2.5.1 
