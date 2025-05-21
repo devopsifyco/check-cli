@@ -53,7 +53,22 @@ jobs:
           name: check-binaries
           path: dist/
 
+      - name: Set up GitHub CLI
+        uses: cli/cli@v3
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "${{ github.ref_name }}" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -64,12 +79,20 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Get release upload URL
+        id: get_upload_url
+        run: |
+          url=$(gh api repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} --jq .upload_url)
+          echo "upload_url=$url" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload check.exe
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check.exe
           asset_name: check.exe
           asset_content_type: application/octet-stream
@@ -79,7 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check-linux-amd64
           asset_name: check-linux-amd64
           asset_content_type: application/octet-stream
@@ -89,7 +112,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check-linux-arm64
           asset_name: check-linux-arm64
           asset_content_type: application/octet-stream
@@ -99,7 +122,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check-macos-intel
           asset_name: check-macos-intel
           asset_content_type: application/octet-stream
@@ -109,7 +132,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: dist/check-macos-arm64
           asset_name: check-macos-arm64
           asset_content_type: application/octet-stream 
