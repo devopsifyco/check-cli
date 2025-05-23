@@ -3,9 +3,6 @@ package types
 import (
 	"crypto/tls"
 	"net/http"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 )
 
 // CVEResponse represents a CVE entry for a product version
@@ -62,39 +59,4 @@ func NewVersionService(client *APIClient) *VersionService {
 	return &VersionService{
 		Client: client,
 	}
-}
-
-// Add GetCVEs method to VersionService
-func (vs *VersionService) GetCVEs(product, version string, vendor *string) ([]CVEResponse, error) {
-	url := fmt.Sprintf("%s/cve?product_name=%s&version=%s", vs.Client.BaseURL, product, version)
-	if vendor != nil {
-		url += "&vendor=" + *vendor
-	}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "Bearer "+vs.Client.APIKey)
-
-	resp, err := vs.Client.HTTPClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var cves []CVEResponse
-	if err := json.Unmarshal(body, &cves); err != nil {
-		return nil, err
-	}
-	return cves, nil
 } 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/devopsifyco/check-cli/checks/dependencies"
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
-	"github.com/devopsifyco/check-cli/checks/types"
 )
 
 // DepsCheckCommand handles the execution of the dependencies check.
@@ -29,7 +28,7 @@ type DepsResult struct {
 	Directory    string                  `json:"directory,omitempty"`
 	Dependencies []dependencies.Dependency `json:"-" yaml:"-"` // Hide the original dependencies
 	Error        string                  `json:"error,omitempty"`
-	CVEs         map[string][]types.CVEResponse `json:"cves,omitempty" yaml:"cves,omitempty"` // Map of dep name@version to CVEs
+	CVEs         map[string][]CVEResponse `json:"cves,omitempty" yaml:"cves,omitempty"` // Map of dep name@version to CVEs
 }
 
 // cleanDependencies converts dependencies to clean format
@@ -52,20 +51,55 @@ func (r *DepsResult) cleanDependencies() []CleanDependency {
 // Print implements CheckResult interface
 func (r *DepsResult) Print(outputFormat string) {
 	switch outputFormat {
-	case "json", "yaml":
-		// Create clean output structure for structured formats
-		cleanResult := struct {
-			Dependencies []CleanDependency         `json:"dependencies" yaml:"dependencies"`
-			CVEs         map[string][]types.CVEResponse   `json:"cves,omitempty" yaml:"cves,omitempty"`
-		}{
-			Dependencies: r.cleanDependencies(),
-			CVEs:         r.CVEs,
+	case "json":
+		// Output only the array of dependencies (with CVEs as before, if needed)
+		output.PrintJSON(r.cleanDependencies())
+	case "yaml":
+		// --- Custom YAML output to match requested format, no top-level 'dependencies' key ---
+		type YAMLCVE struct {
+			CVEID         string    `yaml:"cveid"`
+			State         string    `yaml:"state"`
+			PublishedDate string    `yaml:"publisheddate"`
+			Score         *float64  `yaml:"score"`
+			Title         string    `yaml:"title"`
+			References    []string  `yaml:"references"`
 		}
-		if outputFormat == "json" {
-			output.PrintJSON(cleanResult)
-		} else {
-			output.PrintYAML(cleanResult)
+		type YAMLDependency struct {
+			Name     string     `yaml:"name"`
+			Version  string     `yaml:"version"`
+			Manager  string     `yaml:"manager"`
+			Tags     []string   `yaml:"tags,omitempty"`
+			CVEs     []YAMLCVE  `yaml:"cves,omitempty"`
 		}
+	
+		yamlDeps := make([]YAMLDependency, 0, len(r.Dependencies))
+		for _, dep := range r.Dependencies {
+			cves := []YAMLCVE{}
+			if r.CVEs != nil {
+				key := dep.Name + "@" + dep.Version
+				if depCVEs, ok := r.CVEs[key]; ok {
+					for _, cve := range depCVEs {
+						cves = append(cves, YAMLCVE{
+							CVEID:         cve.CVEID,
+							State:         cve.State,
+							PublishedDate: cve.PublishedDate,
+							Score:         cve.Score,
+							Title:         cve.Title,
+							References:    cve.References,
+						})
+					}
+				}
+			}
+			depYaml := YAMLDependency{
+				Name:    dep.Name,
+				Version: dep.Version,
+				Manager: dep.Manager,
+				Tags:    dep.Tags,
+				CVEs:    cves,
+			}
+			yamlDeps = append(yamlDeps, depYaml)
+		}
+		output.PrintYAML(yamlDeps)
 	default:
 		fmt.Printf("--- Dependencies for %s ---\n", r.Directory)
 		if r.Error != "" {
@@ -138,18 +172,18 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 
 	// If cve flag is set, fetch CVEs for each dependency
 	if c.cve {
-		result.CVEs = make(map[string][]types.CVEResponse)
+		result.CVEs = make(map[string][]CVEResponse)
 		apiKey := os.Getenv("CHECK_API_KEY") // Optionally get from env, or make configurable
 		if apiKey == "" {
 			apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa" // fallback demo key
 		}
-		client := types.NewAPIClient(apiKey)
-		service := types.NewVersionService(client)
+		apiClient := NewAPIClient(apiKey)
+		versionService := NewVersionService(apiClient)
 		for _, dep := range deps {
 			if dep.Name == "" || dep.Version == "" {
 				continue
 			}
-			cves, err := service.GetCVEs(dep.Name, dep.Version, nil)
+			cves, err := versionService.GetCVEs(dep.Name, dep.Version, nil)
 			if err == nil && len(cves) > 0 {
 				key := dep.Name + "@" + dep.Version
 				result.CVEs[key] = cves
