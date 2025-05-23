@@ -123,6 +123,30 @@ check deps package.json -o json
 check deps project.csproj -o yaml
 ```
 
+# Example: Check dependencies and include CVE information
+check deps ./checks/dependencies/samples/pom.xml --cve -o json
+```
+
+Sample output with CVEs:
+```json
+{
+  "dependencies": [
+    {
+      "name": "express",
+      "version": "4.18.2",
+      "manager": "npm",
+      "cves": [
+        {
+          "id": "CVE-2023-12345",
+          "severity": "high",
+          "description": "Example vulnerability in express"
+        }
+      ]
+    }
+  ]
+}
+```
+
 Output formats:
 ```json
 {
