@@ -55,6 +55,7 @@ jobs:
 
   update-version:
     if: github.event_name == 'pull_request'
+    needs: [build]
     runs-on: ubuntu-latest
     outputs:
       next_version: ${{ steps.bump_version.outputs.next_version }}
