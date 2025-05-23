@@ -96,8 +96,8 @@ jobs:
 
       - name: Update README.md download links
         run: |
-          latest_tag="${{ steps.get_version.outputs.latest_tag }}"
-          sed -i "/^## Installation/,/^## /s/{version}/$latest_tag/g" README.md
+          next_version="${{ steps.bump_version.outputs.next_version }}"
+          sed -i "s|/download/[0-9]\+\.[0-9]\+\.[0-9]\+/|/download/$next_version/|g" README.md
 
       - name: Commit and push changes
         run: |
