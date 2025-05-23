@@ -1,10 +1,10 @@
 FROM golang:1.21-alpine AS builder
 
 # Install required tools and certificates
-RUN apk add --no-cache mingw-w64-gcc binutils ca-certificates && update-ca-certificates
+RUN apk add --no-cache mingw-w64-gcc binutils ca-certificates git && update-ca-certificates
 
 # Set Go environment variables
-ENV GOPROXY=https://proxy.golang.org,direct
+ENV GOPROXY=direct
 ENV GOSUMDB=sum.golang.org
 ENV GO111MODULE=on
 ENV GOFLAGS="-mod=mod"
@@ -13,6 +13,7 @@ WORKDIR /app
 
 # Copy go mod and sum files
 COPY go.mod ./
+COPY go.sum ./
 
 # Download dependencies with enhanced retry logic
 RUN --mount=type=cache,target=/go/pkg/mod \
@@ -29,20 +30,12 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy source code and resource files
 COPY . .
 
-# Update dependencies with enhanced retry logic
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    for i in $(seq 1 5); do \
-        echo "Attempt $i: Running go mod tidy..." && \
-        go mod tidy -v && break || \
-        if [ $i -lt 5 ]; then \
-            echo "Attempt $i failed. Retrying in 3 seconds..." && \
-            sleep 3; \
-        fi; \
-    done
-
 # Create dist directory
 RUN mkdir -p /dist
+
+# Create vendor directory
+RUN go mod vendor
+ENV GOFLAGS="-mod=vendor"
 
 # Function to build with retry logic
 RUN echo 'build_with_retry() {' > /build.sh && \

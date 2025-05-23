@@ -137,7 +137,7 @@ func parsePomXML(filePath string) ([]Dependency, error) {
 		}
 		
 		deps = append(deps, Dependency{
-			Name:    fmt.Sprintf("%s:%s", mvnDep.GroupID, mvnDep.ArtifactID),
+			Name:    fmt.Sprintf("%s", mvnDep.ArtifactID),
 			Version: version,
 			Manager: "maven",
 		})

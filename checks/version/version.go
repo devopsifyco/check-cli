@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"github.com/devopsifyco/check-cli/checks/utilities/output"
 )
 
 // Result implements CheckResult interface for version checks
@@ -16,9 +17,9 @@ type Result struct {
 func (r *Result) Print(outputFormat string) {
 	switch outputFormat {
 	case "json":
-		PrintJSON(r)
+		output.PrintJSON(r)
 	case "yaml":
-		PrintYAML(r)
+		output.PrintYAML(r)
 	default:
 		fmt.Println(r.Version)
 	}

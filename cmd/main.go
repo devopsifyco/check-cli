@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/opsify/check/checks"
+	"github.com/devopsifyco/check-cli/checks"
 )
 
 func main() {
@@ -46,7 +46,7 @@ func main() {
 		// Handle dependencies command
 		// Example Usage: check deps [--json] [/path/to/project]
 		// If no path is provided, it defaults to the current directory.
-		depsCommand := checks.NewDepsCheckCommand(*jsonOutput)
+		depsCommand := checks.NewDepsCheckCommand(*jsonOutput, *cve)
 		result, err := depsCommand.Execute(commandArgs) // commandArgs might contain the directory path
 
 		// Print the result regardless of error, as result might contain partial info or error details

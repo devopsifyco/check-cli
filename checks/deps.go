@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/opsify/check/checks/dependencies"
+	"github.com/devopsifyco/check-cli/checks/dependencies"
+	"github.com/devopsifyco/check-cli/checks/utilities/output"
 )
 
 // DepsCheckCommand handles the execution of the dependencies check.
 type DepsCheckCommand struct {
 	*BaseCheckCommand
 	outputFormat string
+	cve          bool // Add cve flag
 }
 
 // CleanDependency represents a dependency without empty fields
@@ -26,6 +28,7 @@ type DepsResult struct {
 	Directory    string                  `json:"directory,omitempty"`
 	Dependencies []dependencies.Dependency `json:"-" yaml:"-"` // Hide the original dependencies
 	Error        string                  `json:"error,omitempty"`
+	CVEs         map[string][]CVEResponse `json:"cves,omitempty" yaml:"cves,omitempty"` // Map of dep name@version to CVEs
 }
 
 // cleanDependencies converts dependencies to clean format
@@ -48,18 +51,98 @@ func (r *DepsResult) cleanDependencies() []CleanDependency {
 // Print implements CheckResult interface
 func (r *DepsResult) Print(outputFormat string) {
 	switch outputFormat {
-	case "json", "yaml":
-		// Create clean output structure for structured formats
-		cleanResult := struct {
-			Dependencies []CleanDependency `json:"dependencies" yaml:"dependencies"`
-		}{
-			Dependencies: r.cleanDependencies(),
+	case "json":
+		// Output only the array of dependencies, with inline CVEs (field names as in CVEResponse)
+		type JSONCVE struct {
+			CVEID         string    `json:"cve_id"`
+			State         string    `json:"state"`
+			PublishedDate string    `json:"published_date"`
+			Score         *float64  `json:"score"`
+			Title         string    `json:"title"`
+			References    []string  `json:"references"`
 		}
-		if outputFormat == "json" {
-			PrintJSON(cleanResult)
-		} else {
-			PrintYAML(cleanResult)
+		type JSONDependency struct {
+			Name     string      `json:"name"`
+			Version  string      `json:"version"`
+			Manager  string      `json:"manager"`
+			Tags     []string    `json:"tags,omitempty"`
+			CVEs     []JSONCVE   `json:"cves,omitempty"`
 		}
+
+		jsonDeps := make([]JSONDependency, 0, len(r.Dependencies))
+		for _, dep := range r.Dependencies {
+			cves := []JSONCVE{}
+			if r.CVEs != nil {
+				key := dep.Name + "@" + dep.Version
+				if depCVEs, ok := r.CVEs[key]; ok {
+					for _, cve := range depCVEs {
+						cves = append(cves, JSONCVE{
+							CVEID:         cve.CVEID,
+							State:         cve.State,
+							PublishedDate: cve.PublishedDate,
+							Score:         cve.Score,
+							Title:         cve.Title,
+							References:    cve.References,
+						})
+					}
+				}
+			}
+			depJson := JSONDependency{
+				Name:    dep.Name,
+				Version: dep.Version,
+				Manager: dep.Manager,
+				Tags:    dep.Tags,
+				CVEs:    cves,
+			}
+			jsonDeps = append(jsonDeps, depJson)
+		}
+		output.PrintJSON(jsonDeps)
+	case "yaml":
+		// --- Custom YAML output to match requested format, no top-level 'dependencies' key ---
+		type YAMLCVE struct {
+			CVEID         string    `yaml:"cveid"`
+			State         string    `yaml:"state"`
+			PublishedDate string    `yaml:"publisheddate"`
+			Score         *float64  `yaml:"score"`
+			Title         string    `yaml:"title"`
+			References    []string  `yaml:"references"`
+		}
+		type YAMLDependency struct {
+			Name     string     `yaml:"name"`
+			Version  string     `yaml:"version"`
+			Manager  string     `yaml:"manager"`
+			Tags     []string   `yaml:"tags,omitempty"`
+			CVEs     []YAMLCVE  `yaml:"cves,omitempty"`
+		}
+	
+		yamlDeps := make([]YAMLDependency, 0, len(r.Dependencies))
+		for _, dep := range r.Dependencies {
+			cves := []YAMLCVE{}
+			if r.CVEs != nil {
+				key := dep.Name + "@" + dep.Version
+				if depCVEs, ok := r.CVEs[key]; ok {
+					for _, cve := range depCVEs {
+						cves = append(cves, YAMLCVE{
+							CVEID:         cve.CVEID,
+							State:         cve.State,
+							PublishedDate: cve.PublishedDate,
+							Score:         cve.Score,
+							Title:         cve.Title,
+							References:    cve.References,
+						})
+					}
+				}
+			}
+			depYaml := YAMLDependency{
+				Name:    dep.Name,
+				Version: dep.Version,
+				Manager: dep.Manager,
+				Tags:    dep.Tags,
+				CVEs:    cves,
+			}
+			yamlDeps = append(yamlDeps, depYaml)
+		}
+		output.PrintYAML(yamlDeps)
 	default:
 		fmt.Printf("--- Dependencies for %s ---\n", r.Directory)
 		if r.Error != "" {
@@ -76,13 +159,20 @@ func (r *DepsResult) Print(outputFormat string) {
 		} else {
 			for _, dep := range r.Dependencies {
 				fmt.Printf("- %s (%s) [%s]\n", dep.Name, dep.Version, dep.Manager)
+				key := dep.Name + "@" + dep.Version
+				if r.CVEs != nil && len(r.CVEs[key]) > 0 {
+					fmt.Println("  CVEs:")
+					for _, cve := range r.CVEs[key] {
+						fmt.Printf("    - %s: %s\n", cve.CVEID, cve.Title)
+					}
+				}
 			}
 		}
 	}
 }
 
 // NewDepsCheckCommand creates a new command for checking dependencies.
-func NewDepsCheckCommand(outputFormat string) *DepsCheckCommand {
+func NewDepsCheckCommand(outputFormat string, cve bool) *DepsCheckCommand {
 	return &DepsCheckCommand{
 		BaseCheckCommand: NewBaseCheckCommand(
 			"deps",
@@ -91,6 +181,7 @@ func NewDepsCheckCommand(outputFormat string) *DepsCheckCommand {
 			0, // 0 required args as path is optional
 		),
 		outputFormat: outputFormat,
+		cve:          cve,
 	}
 }
 
@@ -120,6 +211,27 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 	if err != nil {
 		result.Error = err.Error()
 		return result, err
+	}
+
+	// If cve flag is set, fetch CVEs for each dependency
+	if c.cve {
+		result.CVEs = make(map[string][]CVEResponse)
+		apiKey := os.Getenv("CHECK_API_KEY") // Optionally get from env, or make configurable
+		if apiKey == "" {
+			apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa" // fallback demo key
+		}
+		apiClient := NewAPIClient(apiKey)
+		versionService := NewVersionService(apiClient)
+		for _, dep := range deps {
+			if dep.Name == "" || dep.Version == "" {
+				continue
+			}
+			cves, err := versionService.GetCVEs(dep.Name, dep.Version, nil)
+			if err == nil && len(cves) > 0 {
+				key := dep.Name + "@" + dep.Version
+				result.CVEs[key] = cves
+			}
+		}
 	}
 
 	return result, nil
