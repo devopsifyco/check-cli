@@ -15,7 +15,31 @@ A versatile command-line tool for system checks and dependency management.
 
 ## Installation
 
-Download the latest release for your platform from the releases page.
+Download the latest release for your platform from the [releases page](https://github.com/devopsifyco/check-cli/releases/latest).
+
+### Manual Download
+
+- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/{version}/check.exe)
+- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/{version}/check-linux-amd64)
+- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/{version}/check-linux-arm64)
+- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/{version}/check-macos-intel)
+- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/{version}/check-macos-arm64)
+
+### Download via Command Line
+
+**Linux/macOS:**
+```sh
+curl -LO https://github.com/devopsifyco/check-cli/releases/download/{version}/check-linux-amd64
+chmod +x check-linux-amd64
+./check-linux-amd64 --help
+```
+
+**Windows (PowerShell):**
+```powershell
+Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/{version}/check.exe" -OutFile "check.exe"
+.\check.exe --help
+```
+```
 
 ## Building from Source
 
