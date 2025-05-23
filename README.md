@@ -203,24 +203,50 @@ EOL Date: 2025-04-16
 
 Validate SSL certificates for domains.
 
+#### Usage
 ```bash
-check ssl [domain] [flags]
+check ssl example.com
+```
+
+#### Example Output
+```
+Domain: example.com
+Issuer: Let's Encrypt
+Valid From: 2024-01-01
+Valid To: 2024-04-01
+Status: valid
 ```
 
 ### `os` - Operating System Check
 
 Display system information.
 
+#### Usage
 ```bash
-check os [flags]
+check os
+```
+
+#### Example Output
+```
+OS: Windows 10
+Architecture: amd64
+Kernel Version: 10.0.22631
 ```
 
 ### `speed` - Network Speed Test
 
 Perform network speed test.
 
+#### Usage
 ```bash
-check speed [flags]
+check speed
+```
+
+#### Example Output
+```
+Download: 100 Mbps
+Upload: 20 Mbps
+Latency: 15 ms
 ```
 
 ## Global Flags
@@ -234,13 +260,28 @@ check speed [flags]
 - 1: Error
 - 2: Invalid arguments
 
+## Project Structure
+
+The main directories and files in this project are:
+
+- `main.go` - Entry point for the CLI tool
+- `cmd/` - Command definitions and CLI logic
+- `checks/` - Implementation of system checks (dependencies, version, ssl, os, speed, etc.)
+  - `dependencies/` - Dependency checkers for various package managers
+  - `version/` - Version check logic
+  - `os/` - OS information logic
+- `build/` - Build scripts for different platforms
+- `assets/` - Icons and other resources
+- `Dockerfile` - For building the CLI tool as a Docker image
+- `.github/` - GitHub Actions workflows and templates
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file or visit [https://devopsify.co/license](https://devopsify.co/license) for details.
 
 ## Support
 
