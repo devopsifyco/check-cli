@@ -52,8 +52,51 @@ func (r *DepsResult) cleanDependencies() []CleanDependency {
 func (r *DepsResult) Print(outputFormat string) {
 	switch outputFormat {
 	case "json":
-		// Output only the array of dependencies (with CVEs as before, if needed)
-		output.PrintJSON(r.cleanDependencies())
+		// Output only the array of dependencies, with inline CVEs (field names as in CVEResponse)
+		type JSONCVE struct {
+			CVEID         string    `json:"cve_id"`
+			State         string    `json:"state"`
+			PublishedDate string    `json:"published_date"`
+			Score         *float64  `json:"score"`
+			Title         string    `json:"title"`
+			References    []string  `json:"references"`
+		}
+		type JSONDependency struct {
+			Name     string      `json:"name"`
+			Version  string      `json:"version"`
+			Manager  string      `json:"manager"`
+			Tags     []string    `json:"tags,omitempty"`
+			CVEs     []JSONCVE   `json:"cves,omitempty"`
+		}
+
+		jsonDeps := make([]JSONDependency, 0, len(r.Dependencies))
+		for _, dep := range r.Dependencies {
+			cves := []JSONCVE{}
+			if r.CVEs != nil {
+				key := dep.Name + "@" + dep.Version
+				if depCVEs, ok := r.CVEs[key]; ok {
+					for _, cve := range depCVEs {
+						cves = append(cves, JSONCVE{
+							CVEID:         cve.CVEID,
+							State:         cve.State,
+							PublishedDate: cve.PublishedDate,
+							Score:         cve.Score,
+							Title:         cve.Title,
+							References:    cve.References,
+						})
+					}
+				}
+			}
+			depJson := JSONDependency{
+				Name:    dep.Name,
+				Version: dep.Version,
+				Manager: dep.Manager,
+				Tags:    dep.Tags,
+				CVEs:    cves,
+			}
+			jsonDeps = append(jsonDeps, depJson)
+		}
+		output.PrintJSON(jsonDeps)
 	case "yaml":
 		// --- Custom YAML output to match requested format, no top-level 'dependencies' key ---
 		type YAMLCVE struct {
