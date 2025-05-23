@@ -157,6 +157,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git add README.md
           git commit -m "docs: update README.md download links for ${{ needs.release.outputs.latest_tag }}" || echo "No changes to commit"
+          git pull --rebase origin ${GITHUB_HEAD_REF}
           git push origin HEAD:${GITHUB_HEAD_REF}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
