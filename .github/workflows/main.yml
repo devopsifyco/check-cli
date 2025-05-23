@@ -143,17 +143,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
       - name: Update README.md download links
         run: |
-          node .github/update-readme-download.js ${{ needs.release.outputs.latest_tag }}
+          latest_tag="${{ needs.release.outputs.latest_tag }}"
+          sed -i "/^## Installation/,/^## /s/{version}/$latest_tag/g" README.md
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'docs: update README.md download links for ${{ needs.release.outputs.latest_tag }}'
-          branch: master
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "docs: update README.md download links for ${{ needs.release.outputs.latest_tag }}" || echo "No changes to commit"
+          git push origin HEAD:master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
