@@ -129,8 +129,12 @@ jobs:
         run: |
           git config user.name "DevOpsify"
           git config user.email "devopsifyco@gmail.com"
-          git tag ${{ needs.update-version.outputs.next_version }}
-          git push origin ${{ needs.update-version.outputs.next_version }}
+          if git rev-parse ${{ needs.update-version.outputs.next_version }} >/dev/null 2>&1; then
+            echo "Tag ${{ needs.update-version.outputs.next_version }} already exists. Skipping tag creation."
+          else
+            git tag ${{ needs.update-version.outputs.next_version }}
+            git push origin ${{ needs.update-version.outputs.next_version }}
+          fi
 
       - name: Create GitHub Release
         id: create_release
