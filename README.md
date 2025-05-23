@@ -19,11 +19,11 @@ Download the latest release for your platform from the [releases page](https://g
 
 ### Manual Download
 
-- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.1/check.exe)
-- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.1/check-linux-amd64)
-- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.1/check-linux-arm64)
-- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.1/check-macos-intel)
-- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.1/check-macos-arm64)
+- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check.exe)
+- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check-linux-amd64)
+- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check-linux-arm64)
+- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check-macos-intel)
+- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check-macos-arm64)
 
 ### Download via Command Line
 
@@ -316,3 +316,5 @@ For support, please open an issue in the GitHub repository or contact the mainta
 - [Ookla Speedtest](https://www.speedtest.net/) for the speed test functionality
 - [Go](https://golang.org/) for the programming language
 - [Docker](https://www.docker.com/) for containerization support 
+
+Test
