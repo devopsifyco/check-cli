@@ -5,7 +5,7 @@ Thank you for your interest in contributing to this project! We welcome contribu
 ## How to Contribute
 
 ### 1. Report Issues
-- Search the [issue tracker](https://github.com/your-repo/issues) to see if your issue has already been reported.
+- Search the [issue tracker](https://github.com/devopsifyco/check-cli/issues) to see if your issue has already been reported.
 - If not, open a new issue and provide as much detail as possible.
 
 ### 2. Submit Feature Requests
@@ -16,7 +16,7 @@ Thank you for your interest in contributing to this project! We welcome contribu
 - Click the "Fork" button at the top right of the repository page.
 - Clone your fork to your local machine:
   ```bash
-  git clone https://github.com/your-username/check-cli.git
+  git clone https://github.com/devopsifyco/check-cli.git
   ```
 
 ### 4. Create a Branch
