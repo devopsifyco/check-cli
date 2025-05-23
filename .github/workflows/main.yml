@@ -94,11 +94,13 @@ jobs:
           echo "next_version=$next" >> $GITHUB_OUTPUT
 
       - name: Update README.md download links
+        if: github.event_name == 'pull_request'
         run: |
           next_version="${{ steps.bump_version.outputs.next_version }}"
           sed -i "s|/download/[0-9]\+\.[0-9]\+\.[0-9]\+/|/download/$next_version/|g" README.md
 
       - name: Commit and push changes
+        if: github.event_name == 'pull_request'
         run: |
           git config user.name "DevOpsify"
           git config user.email "devopsifyco@gmail.com"
