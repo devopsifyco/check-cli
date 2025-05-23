@@ -53,15 +53,16 @@ jobs:
       - name: List built files
         run: ls -l dist
 
-  release:
-    needs: build
+  update-version:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    outputs:
+      next_version: ${{ steps.bump_version.outputs.next_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Fetch all tags
-        run: git fetch --tags
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get latest version tag
         id: get_version
@@ -92,71 +93,17 @@ jobs:
           next="${major}.${minor}.${patch}"
           echo "next_version=$next" >> $GITHUB_OUTPUT
 
-      - name: Create Git Tag
-        run: |
-          git config user.name "DevOpsify"
-          git config user.email "devopsifyco@gmail.com"
-          git tag ${{ steps.bump_version.outputs.next_version }}
-          git push origin ${{ steps.bump_version.outputs.next_version }}
-
-      - name: Restore dist cache
-        uses: actions/cache@v4
-        with:
-          path: dist
-          key: dist-${{ github.sha }}
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.bump_version.outputs.next_version }}
-          release_name: Release ${{ steps.bump_version.outputs.next_version }}
-          draft: false
-          prerelease: false
-
-      - name: Get release upload URL
-        id: get_upload_url
-        run: |
-          api_url="https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.bump_version.outputs.next_version }}"
-          upload_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$api_url" | grep -o '"upload_url": *"[^"]*"' | sed 's/"upload_url": *"\([^"]*\)"/\1/' | sed 's/{?name,label}//')
-          echo "upload_url=$upload_url" >> $GITHUB_OUTPUT
-
-      - name: Upload release assets
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.bump_version.outputs.next_version }}
-          files: |
-            dist/check.exe
-            dist/check-linux-amd64
-            dist/check-linux-arm64
-            dist/check-macos-intel
-            dist/check-macos-arm64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  update-readme:
-    if: github.event_name == 'pull_request'
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Update README.md download links
         run: |
-          latest_tag="${{ needs.release.outputs.latest_tag }}"
+          latest_tag="${{ steps.get_version.outputs.latest_tag }}"
           sed -i "/^## Installation/,/^## /s/{version}/$latest_tag/g" README.md
 
       - name: Commit and push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "DevOpsify"
+          git config user.email "devopsifyco@gmail.com"
           git add README.md
-          git commit -m "docs: update README.md download links for ${{ needs.release.outputs.latest_tag }}" || echo "No changes to commit"
+          git commit -m "docs: update README.md download links for ${{ steps.get_version.outputs.latest_tag }}" || echo "No changes to commit"
           export GIT_EDITOR=true
           git pull --rebase origin ${GITHUB_HEAD_REF} || {
             git status
@@ -165,5 +112,53 @@ jobs:
             git rebase --continue
           }
           git push origin HEAD:${GITHUB_HEAD_REF}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    needs: [build, update-version]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Create Git Tag
+        run: |
+          git config user.name "DevOpsify"
+          git config user.email "devopsifyco@gmail.com"
+          git tag ${{ needs.update-version.outputs.next_version }}
+          git push origin ${{ needs.update-version.outputs.next_version }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.update-version.outputs.next_version }}
+          release_name: Release ${{ needs.update-version.outputs.next_version }}
+          draft: false
+          prerelease: false
+
+      - name: Get release upload URL
+        id: get_upload_url
+        run: |
+          api_url="https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ needs.update-version.outputs.next_version }}"
+          upload_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$api_url" | grep -o '"upload_url": *"[^"]*"' | sed 's/"upload_url": *"\([^"]*\)"/\1/' | sed 's/{?name,label}//')
+          echo "upload_url=$upload_url" >> $GITHUB_OUTPUT
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.update-version.outputs.next_version }}
+          files: |
+            dist/check.exe
+            dist/check-linux-amd64
+            dist/check-linux-arm64
+            dist/check-macos-intel
+            dist/check-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
