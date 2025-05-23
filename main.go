@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/opsify/check/checks"
+	"github.com/devopsifyco/check-cli/checks"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +34,7 @@ func main() {
 		"os":        checks.NewOSCheckCommand(),
 		"speed":     checks.NewSpeedCheckCommand(),
 		"ssl":       checks.NewSSLCheckCommand(),
-		"deps":      checks.NewDepsCheckCommand(outputFormat),
+		"deps":      checks.NewDepsCheckCommand(outputFormat, false),
 	}
 
 	// Add commands to root
@@ -73,6 +73,13 @@ func main() {
 					registry[cmdName] = cmd
 				}
 
+				// For deps command, create a new instance with the current flags
+				if cmdName == "deps" {
+					cve, _ := cobraCmd.Flags().GetBool("cve")
+					cmd = checks.NewDepsCheckCommand(outputFormat, cve)
+					registry[cmdName] = cmd
+				}
+
 				// Execute the check command
 				result, err := cmd.Execute(args)
 				if err != nil {
@@ -91,6 +98,11 @@ func main() {
 			cobraCmd.Flags().BoolP("full", "f", false, "Show full version information")
 			cobraCmd.Flags().BoolP("history", "H", false, "Show version history")
 			cobraCmd.Flags().StringP("output", "o", "", "Output format (json, yaml)")
+			cobraCmd.Flags().Bool("cve", false, "Include CVEs in the response")
+		}
+
+		// Add deps-specific flags
+		if name == "deps" {
 			cobraCmd.Flags().Bool("cve", false, "Include CVEs in the response")
 		}
 

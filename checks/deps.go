@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/opsify/check/checks/dependencies"
+	"github.com/devopsifyco/check-cli/checks/dependencies"
+	"github.com/devopsifyco/check-cli/checks/utilities/output"
+	"github.com/devopsifyco/check-cli/checks/types"
 )
 
 // DepsCheckCommand handles the execution of the dependencies check.
 type DepsCheckCommand struct {
 	*BaseCheckCommand
 	outputFormat string
+	cve          bool // Add cve flag
 }
 
 // CleanDependency represents a dependency without empty fields
@@ -26,6 +29,7 @@ type DepsResult struct {
 	Directory    string                  `json:"directory,omitempty"`
 	Dependencies []dependencies.Dependency `json:"-" yaml:"-"` // Hide the original dependencies
 	Error        string                  `json:"error,omitempty"`
+	CVEs         map[string][]types.CVEResponse `json:"cves,omitempty" yaml:"cves,omitempty"` // Map of dep name@version to CVEs
 }
 
 // cleanDependencies converts dependencies to clean format
@@ -51,14 +55,16 @@ func (r *DepsResult) Print(outputFormat string) {
 	case "json", "yaml":
 		// Create clean output structure for structured formats
 		cleanResult := struct {
-			Dependencies []CleanDependency `json:"dependencies" yaml:"dependencies"`
+			Dependencies []CleanDependency         `json:"dependencies" yaml:"dependencies"`
+			CVEs         map[string][]types.CVEResponse   `json:"cves,omitempty" yaml:"cves,omitempty"`
 		}{
 			Dependencies: r.cleanDependencies(),
+			CVEs:         r.CVEs,
 		}
 		if outputFormat == "json" {
-			PrintJSON(cleanResult)
+			output.PrintJSON(cleanResult)
 		} else {
-			PrintYAML(cleanResult)
+			output.PrintYAML(cleanResult)
 		}
 	default:
 		fmt.Printf("--- Dependencies for %s ---\n", r.Directory)
@@ -76,13 +82,20 @@ func (r *DepsResult) Print(outputFormat string) {
 		} else {
 			for _, dep := range r.Dependencies {
 				fmt.Printf("- %s (%s) [%s]\n", dep.Name, dep.Version, dep.Manager)
+				key := dep.Name + "@" + dep.Version
+				if r.CVEs != nil && len(r.CVEs[key]) > 0 {
+					fmt.Println("  CVEs:")
+					for _, cve := range r.CVEs[key] {
+						fmt.Printf("    - %s: %s\n", cve.CVEID, cve.Title)
+					}
+				}
 			}
 		}
 	}
 }
 
 // NewDepsCheckCommand creates a new command for checking dependencies.
-func NewDepsCheckCommand(outputFormat string) *DepsCheckCommand {
+func NewDepsCheckCommand(outputFormat string, cve bool) *DepsCheckCommand {
 	return &DepsCheckCommand{
 		BaseCheckCommand: NewBaseCheckCommand(
 			"deps",
@@ -91,6 +104,7 @@ func NewDepsCheckCommand(outputFormat string) *DepsCheckCommand {
 			0, // 0 required args as path is optional
 		),
 		outputFormat: outputFormat,
+		cve:          cve,
 	}
 }
 
@@ -120,6 +134,27 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 	if err != nil {
 		result.Error = err.Error()
 		return result, err
+	}
+
+	// If cve flag is set, fetch CVEs for each dependency
+	if c.cve {
+		result.CVEs = make(map[string][]types.CVEResponse)
+		apiKey := os.Getenv("CHECK_API_KEY") // Optionally get from env, or make configurable
+		if apiKey == "" {
+			apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa" // fallback demo key
+		}
+		client := types.NewAPIClient(apiKey)
+		service := types.NewVersionService(client)
+		for _, dep := range deps {
+			if dep.Name == "" || dep.Version == "" {
+				continue
+			}
+			cves, err := service.GetCVEs(dep.Name, dep.Version, nil)
+			if err == nil && len(cves) > 0 {
+				key := dep.Name + "@" + dep.Version
+				result.CVEs[key] = cves
+			}
+		}
 	}
 
 	return result, nil

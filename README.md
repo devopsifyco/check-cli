@@ -316,5 +316,3 @@ For support, please open an issue in the GitHub repository or contact the mainta
 - [Ookla Speedtest](https://www.speedtest.net/) for the speed test functionality
 - [Go](https://golang.org/) for the programming language
 - [Docker](https://www.docker.com/) for containerization support 
-
-Test

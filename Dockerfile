@@ -1,7 +1,7 @@
 FROM golang:1.21-alpine AS builder
 
 # Install required tools and certificates
-RUN apk add --no-cache mingw-w64-gcc binutils ca-certificates && update-ca-certificates
+RUN apk add --no-cache mingw-w64-gcc binutils ca-certificates git && update-ca-certificates
 
 # Set Go environment variables
 ENV GOPROXY=https://proxy.golang.org,direct
@@ -13,6 +13,7 @@ WORKDIR /app
 
 # Copy go mod and sum files
 COPY go.mod ./
+COPY go.sum ./
 
 # Download dependencies with enhanced retry logic
 RUN --mount=type=cache,target=/go/pkg/mod \
@@ -28,6 +29,10 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 # Copy source code and resource files
 COPY . .
+
+# Create vendor directory
+RUN go mod vendor
+ENV GOFLAGS="-mod=vendor"
 
 # Update dependencies with enhanced retry logic
 RUN --mount=type=cache,target=/go/pkg/mod \
