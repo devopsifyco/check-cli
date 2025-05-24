@@ -4,8 +4,8 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 project = 'Check Tool'
-copyright = ''
-author = ''
+copyright = 'DevOpsify'
+author = 'DevOpsify'
 release = ''
 
 extensions = []
@@ -20,6 +20,6 @@ html_context = {
     "display_github": True,  # Integrate GitHub
     "github_user": "devopsifyco",  # GitHub username or org
     "github_repo": "check-cli",  # Repository name
-    "github_version": "master",  # Branch or tag
+    "github_version": "update-doc",  # Branch or tag
     "doc_path": "docs",  # Path to your docs root in the repo
 } 
