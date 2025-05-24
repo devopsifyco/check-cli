@@ -2,8 +2,12 @@ name: Build All Binaries
 
 on:
   push:
+    paths-ignore:
+      - 'docs/**'
     branches: [ master ]
   pull_request:
+    paths-ignore:
+      - 'docs/**'
     branches: [ master ]
   workflow_dispatch:
     inputs:
@@ -152,13 +156,29 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create GitHub Release and Upload Assets
-        uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ needs.update-version.outputs.next_version }}
-          name: Release ${{ needs.update-version.outputs.next_version }}
+          release_name: Release ${{ needs.update-version.outputs.next_version }}
           draft: false
           prerelease: false
+
+      - name: Get release upload URL
+        id: get_upload_url
+        run: |
+          api_url="https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ needs.update-version.outputs.next_version }}"
+          upload_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$api_url" | grep -o '"upload_url": *"[^"]*"' | sed 's/"upload_url": *"\([^"]*\)"/\1/' | sed 's/{?name,label}//')
+          echo "upload_url=$upload_url" >> $GITHUB_OUTPUT
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.update-version.outputs.next_version }}
           files: |
             dist/check.exe
             dist/check-linux-amd64
