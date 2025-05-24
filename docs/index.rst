@@ -1,7 +1,7 @@
-.. Check CLI Tool documentation master file
-   Welcome to Check CLI Tool's documentation!
+.. Check Tool documentation master file
+   Welcome to Check Tool's documentation!
 
-Check CLI Tool
+Check Tool
 ==============
 
 A versatile command-line tool for system checks and dependency management.
