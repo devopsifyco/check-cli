@@ -22,4 +22,12 @@ html_theme_options = {
     "github_repo": "check-cli",
     "github_version": "master",
     "conf_py_path": "docs",  # Path in the repo to the docs folder
+}
+
+html_context = {
+    "display_github": True, # Integrate GitHub
+    "github_user": "devopsifyco", # Username
+    "github_repo": "check-cli", # Repo name
+    "github_version": "master", # Branch
+    "conf_py_path": "/docs/", # Path in the checkout to the docs root
 } 
