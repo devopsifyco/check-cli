@@ -20,6 +20,5 @@ html_theme_options = {
     "display_github": True,
     "github_user": "devopsifyco",
     "github_repo": "check-cli",
-    "github_version": "update-doc",
-    "conf_py_path": "docs",  # Path in the repo to the docs folder
+    "github_version": "update-doc"    
 } 
