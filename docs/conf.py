@@ -16,10 +16,10 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 # Update the following html_context values with your actual GitHub username and repository name
-html_context = {
-    "display_github": True,  # Integrate GitHub
-    "github_user": "devopsifyco",  # GitHub username or org
-    "github_repo": "check-cli",  # Repository name
-    "github_version": "update-doc",  # Branch or tag
-    "doc_path": "docs",  # Path to your docs root in the repo
+html_theme_options = {
+    "display_github": True,
+    "github_user": "devopsifyco",
+    "github_repo": "check-cli",
+    "github_version": "update-doc",
+    "conf_py_path": "/docs/",  # Path in the repo to the docs folder
 } 
