@@ -29,14 +29,14 @@ Download the latest release for your platform from the [releases page](https://g
 
 **Linux/macOS:**
 ```sh
-curl -LO https://github.com/devopsifyco/check-cli/releases/download//check-linux-amd64
+curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check-linux-amd64
 chmod +x check-linux-amd64
 ./check-linux-amd64 --help
 ```
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download//check.exe" -OutFile "check.exe"
+Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.2/check.exe" -OutFile "check.exe"
 .\check.exe --help
 ```
 
