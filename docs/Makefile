@@ -13,4 +13,4 @@ clean:
 	rm -rf $(BUILDDIR)
 
 multiversion:
-	$(SPHINXBUILD) -b multiversion $(SOURCEDIR) $(BUILDDIR)/html 
+	sphinx-multiversion $(SOURCEDIR) $(BUILDDIR)/html 
