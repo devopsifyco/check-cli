@@ -4,13 +4,10 @@ SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-.PHONY: html clean multiversion
+.PHONY: html clean
 
 html:
 	$(SPHINXBUILD) -b html $(SOURCEDIR) $(BUILDDIR)/html
 
 clean:
-	rm -rf $(BUILDDIR)
-
-multiversion:
-	python build_docs.py 
+	rm -rf $(BUILDDIR) 
