@@ -6,8 +6,6 @@ def build_doc(version, language, tag):
     os.environ["current_version"] = version
     os.environ["current_language"] = language
     subprocess.run(f"git checkout {tag}", shell=True, check=True)
-    subprocess.run("git checkout master -- conf.py", shell=True, check=True)
-    subprocess.run("git checkout master -- versions.yaml", shell=True, check=True)
     os.environ['SPHINXOPTS'] = f"-D language='{language}'"
     subprocess.run("make html", shell=True, check=True)
 
