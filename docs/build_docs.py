@@ -5,11 +5,15 @@ import yaml
 def build_doc(version, language, tag):
     os.environ["current_version"] = version
     os.environ["current_language"] = language
-    # Save Makefile
+    # Save Makefile, conf.py, and versions.yaml
     subprocess.run("cp Makefile /tmp/Makefile", shell=True, check=True)
+    subprocess.run("cp conf.py /tmp/conf.py", shell=True, check=True)
+    subprocess.run("cp versions.yaml /tmp/versions.yaml", shell=True, check=True)
     subprocess.run(f"git checkout {tag}", shell=True, check=True)
-    # Restore Makefile
+    # Restore Makefile, conf.py, and versions.yaml
     subprocess.run("cp /tmp/Makefile Makefile", shell=True, check=True)
+    subprocess.run("cp /tmp/conf.py conf.py", shell=True, check=True)
+    subprocess.run("cp /tmp/versions.yaml versions.yaml", shell=True, check=True)
     os.environ['SPHINXOPTS'] = f"-D language='{language}'"
     subprocess.run("make html", shell=True, check=True)
 
