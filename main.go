@@ -17,8 +17,8 @@ func main() {
 	// Create root command
 	rootCmd := &cobra.Command{
 		Use:   "check",
-		Short: "A DevOpsify CLI for various system checks",
-		Long:  "A DevOpsify CLI for performing various system checks including version, OS, speed, and SSL certificate checks.",
+		Short: "DevOpsify Check Tool for various system checks",
+		Long:  "DevOpsify Check Tool for performing various system checks including version, OS, speed, and SSL certificate checks.",
 	}
 
 	// Add global flags

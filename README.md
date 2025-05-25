@@ -1,6 +1,6 @@
-# Check CLI Tool
+# DevOpsify Check Tool
 
-Check CLI Tool is a fast, cross-platform command-line utility for developers, DevOps engineers, and IT professionals to quickly analyze dependencies, check software versions (with CVE info), validate SSL certificates, inspect OS details, and test network speed. It supports Windows, Linux, and macOS, and outputs results in JSON or YAML for easy integration into CI/CD, security audits, and troubleshooting workflows.
+DevOpsify Check Tool is a fast, cross-platform command-line utility for developers, DevOps engineers, and IT professionals to quickly analyze dependencies, check software versions (with CVE info), validate SSL certificates, inspect OS details, and test network speed. It supports Windows, Linux, and macOS, and outputs results in JSON or YAML for easy integration into CI/CD, security audits, and troubleshooting workflows.
 
 ## ✨Features
 
@@ -11,7 +11,7 @@ Check CLI Tool is a fast, cross-platform command-line utility for developers, De
 - 🚀 Perform network speed tests
 - 📝 Output results in JSON and YAML formats for automation and reporting
 
-For full documentation, visit the [official Check CLI documentation](https://devopsifyco.github.io/check-cli).
+For full documentation, visit the [official DevOpsify Check Tool documentation](https://devopsifyco.github.io/check-cli).
 
 ## Installation
 

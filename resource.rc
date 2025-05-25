@@ -14,12 +14,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "DevOpsify"
-            VALUE "FileDescription", "DevOpsify CLI for system checks"
+            VALUE "FileDescription", "DevOpsify Check Tool for system checks"
             VALUE "FileVersion", "1.0.0"
             VALUE "InternalName", "check.exe"
             VALUE "LegalCopyright", "Copyright© 2025 DevOpsify"
             VALUE "OriginalFilename", "check.exe"
-            VALUE "ProductName", "DevOpsify Check CLI"
+            VALUE "ProductName", "DevOpsify Check Tool"
             VALUE "ProductVersion", "1.0.0"
         END
     END
