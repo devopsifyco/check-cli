@@ -8,7 +8,7 @@ copyright = 'DevOpsify'
 author = 'DevOpsify'
 release = ''
 
-extensions = []
+extensions = ['sphinx_multiversion']
 templates_path = ['_templates']
 exclude_patterns = []
 
@@ -32,3 +32,10 @@ html_context = {
     "github_version": "master", # Branch
     "conf_py_path": "/docs/", # Path in the checkout to the docs root
 } 
+
+# sphinx-multiversion configuration
+smv_tag_whitelist = r'^v\\d+\\.\\d+$'  # Only tags like v1.0, v2.1, etc.
+smv_branch_whitelist = r'^(main|master|develop)$'  # Only main branches
+smv_remote_whitelist = r'^origin$'
+smv_released_pattern = r'^tags/v\\d+\\.\\d+$'
+smv_outputdir_format = '{ref.name}' 

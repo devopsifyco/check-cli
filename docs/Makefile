@@ -4,10 +4,13 @@ SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-.PHONY: html clean
+.PHONY: html clean multiversion
 
 html:
 	$(SPHINXBUILD) -b html $(SOURCEDIR) $(BUILDDIR)/html
 
 clean:
-	rm -rf $(BUILDDIR) 
+	rm -rf $(BUILDDIR)
+
+multiversion:
+	$(SPHINXBUILD) -b multiversion $(SOURCEDIR) $(BUILDDIR)/html 
