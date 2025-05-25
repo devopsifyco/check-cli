@@ -43,13 +43,13 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
 
 ## 🚀 Contribute
 
-1. **Clone the repository:**
+**Clone the repository:**
    ```sh
    git clone https://github.com/devopsifyco/check-cli.git
    cd check-cli
    ```
 
-2. **Build using Docker (recommended for all platforms):**
+**Build using Docker (recommended for all platforms):**
    - On **Windows**:
      ```bat
      build\windows.bat
@@ -69,7 +69,7 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
    - `check-macos-intel` (macOS Intel)
    - `check-macos-arm64` (macOS ARM64)
 
-3. **Run the CLI:**
+**Run the CLI:**
    - On your platform, use the appropriate executable from the `dist` directory. For example:
      ```sh
      ./dist/check-linux-amd64 --help
