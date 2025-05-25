@@ -34,8 +34,8 @@ html_context = {
 } 
 
 # sphinx-multiversion configuration
-smv_tag_whitelist = r'^v\\d+\\.\\d+$'  # Only tags like v1.0, v2.1, etc.
+smv_tag_whitelist = r'^\d+\.\d+$'  # Only tags like 1.0, 2.1, etc.
 smv_branch_whitelist = r'^(main|master|develop)$'  # Only main branches
 smv_remote_whitelist = r'^origin$'
-smv_released_pattern = r'^tags/v\\d+\\.\\d+$'
+smv_released_pattern = r'^tags/\d+\.\d+$'
 smv_outputdir_format = '{ref.name}' 
