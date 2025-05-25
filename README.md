@@ -4,12 +4,12 @@ Check CLI Tool is a fast, cross-platform command-line utility for developers, De
 
 ## ✨Features
 
-- ✅ Analyze project dependencies for multiple package managers (Maven, npm, pip, Go, .NET, etc.)
-- ✅ Check and compare software versions locally and remotely, with version history and CVE vulnerability info
-- ✅ Validate SSL certificates for domains
-- ✅ Display detailed operating system and environment information
-- ✅ Perform network speed tests
-- 🎨 Output results in JSON and YAML formats for automation and reporting
+- 📦 Analyze project dependencies for multiple package managers (Maven, npm, pip, Go, .NET, etc.)
+- 🔍 Check and compare software versions locally and remotely, with version history and CVE vulnerability info
+- 🔒 Validate SSL certificates for domains
+- 🖥️ Display detailed operating system and environment information
+- 🚀 Perform network speed tests
+- 📝 Output results in JSON and YAML formats for automation and reporting
 
 For full documentation, visit the [official Check CLI documentation](https://devopsifyco.github.io/check-cli).
 
