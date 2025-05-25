@@ -1,7 +1,7 @@
-.. Check Tool documentation master file
-   Welcome to Check Tool's documentation!
+.. DevOpsify Check Tool documentation master file
+   Welcome to DevOpsify Check Tool's documentation!
 
-Check Tool
+DevOpsify Check Tool
 ==============
 
 A versatile command-line tool for system checks and dependency management.

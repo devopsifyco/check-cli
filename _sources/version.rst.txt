@@ -1,7 +1,4 @@
-Version Command
-===============
-
-Check version information for components, supporting both local and remote version lookups.
+DevOpsify Check Tool version information for components, supporting both local and remote version lookups.
 
 Usage
 -----
