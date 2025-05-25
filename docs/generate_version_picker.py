@@ -6,12 +6,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <title>Check Tool Documentation Versions</title>
     <meta charset=\"utf-8\">
     <style>
-      body { font-family: sans-serif; margin: 2em; }
-      h1 { color: #2c3e50; }
-      ul { list-style: none; padding: 0; }
-      li { margin: 0.5em 0; }
-      a { color: #2980b9; text-decoration: none; font-size: 1.2em; }
-      a:hover { text-decoration: underline; }
+      body {{ font-family: sans-serif; margin: 2em; }}
+      h1 {{ color: #2c3e50; }}
+      ul {{ list-style: none; padding: 0; }}
+      li {{ margin: 0.5em 0; }}
+      a {{ color: #2980b9; text-decoration: none; font-size: 1.2em; }}
+      a:hover {{ text-decoration: underline; }}
     </style>
   </head>
   <body>
