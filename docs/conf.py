@@ -14,6 +14,7 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+pygments_style = 'sphinx'
 
 # Update the following html_context values with your actual GitHub username and repository name
 html_theme_options = {
