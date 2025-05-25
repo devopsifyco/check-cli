@@ -1,24 +1,211 @@
+
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Check Tool Documentation Versions</title>
-    <meta charset="utf-8">
-    <style>
-      body { font-family: sans-serif; margin: 2em; }
-      h1 { color: #2c3e50; }
-      ul { list-style: none; padding: 0; }
-      li { margin: 0.5em 0; }
-      a { color: #2980b9; text-decoration: none; font-size: 1.2em; }
-      a:hover { text-decoration: underline; }
-    </style>
-  </head>
-  <body>
-    <h1>Check Tool Documentation</h1>
-    <p>Select a version:</p>
-    <ul>
-      <li><a href="master/">master</a></li>
-    </ul>
-    <hr>
-    <small>Built with Sphinx Multiversion</small>
-  </body>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check Tool &mdash; Check Tool  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deps Command" href="deps.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Check Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Commands</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deps.html">Deps Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">Version Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Check Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Check Tool</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/devopsifyco/check-cli/blob/master/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="check-tool">
+<h1>Check Tool<a class="headerlink" href="#check-tool" title="Permalink to this heading"></a></h1>
+<p>A versatile command-line tool for system checks and dependency management.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Dependency analysis for multiple package managers</p></li>
+<li><p>Version information checks (local and remote)</p></li>
+<li><p>SSL certificate validation</p></li>
+<li><p>Operating system information</p></li>
+<li><p>Network speed testing</p></li>
+<li><p>JSON and YAML output formats</p></li>
+<li><p>Version history tracking</p></li>
+<li><p>Support for multiple dependency file formats</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p>Download the latest release for your platform from the <a class="reference external" href="https://github.com/devopsifyco/check-cli/releases/latest">releases page</a>.</p>
+<section id="manual-download">
+<h3>Manual Download:<a class="headerlink" href="#manual-download" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Windows: check.exe</p></li>
+<li><p>Linux AMD64: check-linux-amd64</p></li>
+<li><p>Linux ARM64: check-linux-arm64</p></li>
+<li><p>macOS Intel: check-macos-intel</p></li>
+<li><p>macOS ARM64: check-macos-arm64</p></li>
+</ul>
+</section>
+<section id="command-line-download">
+<h3>Command Line Download:<a class="headerlink" href="#command-line-download" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-LO<span class="w"> </span>https://github.com/devopsifyco/check-cli/releases/download/&lt;version&gt;/check-linux-amd64
+chmod<span class="w"> </span>+x<span class="w"> </span>check-linux-amd64
+./check-linux-amd64<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&quot;https://github.com/devopsifyco/check-cli/releases/download/&lt;version&gt;/check.exe&quot;</span> <span class="n">-OutFile</span> <span class="s2">&quot;check.exe&quot;</span>
+<span class="p">.\</span><span class="n">check</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-help</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="building-from-source">
+<h2>Building from Source<a class="headerlink" href="#building-from-source" title="Permalink to this heading"></a></h2>
+<p>You can build the CLI tool locally for all supported platforms using Docker. See the README for platform-specific instructions.</p>
+</section>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Commands</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deps.html">Deps Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deps.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deps.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deps.html#supported-package-managers-and-files">Supported Package Managers and Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deps.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">Version Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="version.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version.html#arguments">Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version.html#flags">Flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version.html#supported-components-for-local-version-check">Supported Components for Local Version Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="version.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ssl.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ssl.html#example-output">Example Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="os.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="os.html#example-output">Example Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="speed.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="speed.html#example-output">Example Output</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>global_flags
+exit_codes</p>
+</section>
+<section id="project-structure">
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>main.go: Entry point</p></li>
+<li><p>cmd/: Command definitions</p></li>
+<li><p>checks/: System checks (dependencies, version, ssl, os, speed)</p></li>
+<li><p>build/: Build scripts</p></li>
+<li><p>assets/: Icons/resources</p></li>
+<li><p>Dockerfile: Docker build</p></li>
+<li><p>.github/: GitHub Actions workflows</p></li>
+</ul>
+</section>
+<section id="contributing-license">
+<h2>Contributing &amp; License<a class="headerlink" href="#contributing-license" title="Permalink to this heading"></a></h2>
+<p>See CONTRIBUTING.md and LICENSE for details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deps.html" class="btn btn-neutral float-right" title="Deps Command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright DevOpsify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
