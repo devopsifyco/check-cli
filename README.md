@@ -41,7 +41,7 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
 .\check.exe --help
 ```
 
-## 🚀 Contribute
+## 🚀 Get started
 
 **Clone the repository:**
    ```sh
@@ -49,12 +49,28 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
    cd check-cli
    ```
 
+### Project Structure
+
+- `main.go` - Entry point for the CLI tool
+- `cmd/` - Command definitions and CLI logic
+- `checks/` - Implementation of system checks (dependencies, version, ssl, os, speed, etc.)
+  - `dependencies/` - Dependency checkers for various package managers
+  - `version/` - Version check logic
+  - `os/` - OS information logic
+- `build/` - Build scripts for different platforms
+- `assets/` - Icons and other resources
+- `Dockerfile` - For building the CLI tool as a Docker image
+- `.github/` - GitHub Actions workflows and templates
+
 **Build using Docker (recommended for all platforms):**
-   - On **Windows**:
+
+On **Windows**:
+
      ```bat
      build\windows.bat
      ```
-   - On **Linux/macOS**:
+On **Linux/macOS**:
+
      ```sh
      bash build/linux.sh
      # or, after making it executable:
@@ -78,19 +94,6 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
      ```
 
 For more details, see the [official documentation](https://devopsifyco.github.io/check-cli).
-
-## Project Structure
-
-- `main.go` - Entry point for the CLI tool
-- `cmd/` - Command definitions and CLI logic
-- `checks/` - Implementation of system checks (dependencies, version, ssl, os, speed, etc.)
-  - `dependencies/` - Dependency checkers for various package managers
-  - `version/` - Version check logic
-  - `os/` - OS information logic
-- `build/` - Build scripts for different platforms
-- `assets/` - Icons and other resources
-- `Dockerfile` - For building the CLI tool as a Docker image
-- `.github/` - GitHub Actions workflows and templates
 
 
 ## 🤝 Contributing
