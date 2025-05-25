@@ -13,5 +13,4 @@ clean:
 	rm -rf $(BUILDDIR)
 
 multiversion:
-	sphinx-multiversion $(SOURCEDIR) $(BUILDDIR)/html
-	python generate_version_picker.py 
+	python build_docs.py 
