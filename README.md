@@ -5,13 +5,40 @@ DevOpsify Check Tool is a fast, cross-platform command-line utility for develope
 ## ✨Features
 
 - 📦 Analyze project dependencies for multiple package managers (Maven, npm, pip, Go, .NET, etc.)
-- 🔍 Check and compare software versions locally and remotely, with version history and CVE vulnerability info
+- 🔍 Check and compare software versions locally and remotely, with version history and **CVE vulnerability info**
 - 🔒 Validate SSL certificates for domains
 - 🖥️ Display detailed operating system and environment information
 - 🚀 Perform network speed tests
 - 📝 Output results in JSON and YAML formats for automation and reporting
+- 📜 Version history tracking
+- 🗂️ Support for multiple dependency file formats
 
 For full documentation, visit the [official DevOpsify Check Tool documentation](https://devopsifyco.github.io/check-cli).
+
+## 🚀 Quick Usage Example
+
+```sh
+# Check the latest version of nginx
+./check version nginx
+
+# Check a specific version and show full details
+./check version nginx 1.24.0 --full
+
+# Check a specific version and include CVE information
+./check version postgresql 16.4 --cve
+
+# Check dependencies in a project and include CVE information
+./check deps --cve -o json
+
+# Validate SSL certificate for a domain
+./check ssl example.com
+
+# Show operating system details
+./check os
+
+# Run a network speed test
+./check speed
+```
 
 ## Installation
 
@@ -40,26 +67,21 @@ Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/downlo
 .\check.exe --help
 ```
 
-## 🚀 Get started
-
-**Clone the repository:**
-   ```sh
-   git clone https://github.com/devopsifyco/check-cli.git
-   cd check-cli
-   ```
-
-### Project Structure
+## 🏗️ Project Structure
 
 - `main.go` - Entry point for the CLI tool
 - `cmd/` - Command definitions and CLI logic
 - `checks/` - Implementation of system checks (dependencies, version, ssl, os, speed, etc.)
-  - `dependencies/` - Dependency checkers for various package managers
-  - `version/` - Version check logic
-  - `os/` - OS information logic
+  - `dependencies/` - Dependency checkers for various package managers (Maven, Node.js, Python, .NET, Go)
+  - `version/` - Version check logic (local and remote)
+  - `os/` - OS information logic (Windows, Linux, macOS)
 - `build/` - Build scripts for different platforms
 - `assets/` - Icons and other resources
+- `docs/` - Documentation sources (reStructuredText, Sphinx config, etc.)
 - `Dockerfile` - For building the CLI tool as a Docker image
 - `.github/` - GitHub Actions workflows and templates
+- `CONTRIBUTING.md` - Contribution guidelines
+- `LICENSE` - License file
 
 **Build using Docker (recommended for all platforms):**
 
