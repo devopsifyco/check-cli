@@ -122,36 +122,25 @@ check<span class="w"> </span>deps<span class="w"> </span>project.csproj<span cla
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>deps<span class="w"> </span>./checks/dependencies/samples/pom.xml<span class="w"> </span>--cve<span class="w"> </span>-o<span class="w"> </span>json
 </pre></div>
 </div>
-<p>Sample output with CVEs:
-.. code-block:: json</p>
-<blockquote>
-<div><dl>
-<dt>{</dt><dd><dl>
-<dt>“dependencies”: [</dt><dd><dl>
-<dt>{</dt><dd><p>“name”: “express”,
-“version”: “4.18.2”,
-“manager”: “npm”,
-“cves”: [</p>
-<blockquote>
-<div><dl class="simple">
-<dt>{</dt><dd><p>“id”: “CVE-2023-12345”,
-“severity”: “high”,
-“description”: “Example vulnerability in express”</p>
-</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
-<p>]</p>
-</dd>
-</dl>
-<p>}</p>
-</dd>
-</dl>
-<p>]</p>
-</dd>
-</dl>
-<p>}</p>
-</div></blockquote>
+<p>Sample output with CVEs:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;express&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.18.2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;manager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;npm&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cves&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CVE-2023-12345&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Example vulnerability in express&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
