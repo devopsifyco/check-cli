@@ -33,8 +33,6 @@ type VersionResponseFull struct {
 	ActiveSupportEndDate  *time.Time `json:"active_support_end_date"`
 	SecuritySupportEndDate *time.Time `json:"security_support_end_date"`
 	EOL                   *time.Time `json:"eol_date"`
-	CreatedAt             *time.Time `json:"created_at,omitempty"`
-	UpdatedAt             *time.Time `json:"updated_at,omitempty"`
 }
 
 // VersionHistory represents a single version entry
@@ -47,7 +45,6 @@ type VersionHistory struct {
 	EOL                  *time.Time `json:"eol_date"`
 	ID                   int        `json:"id"`
 	Vendor               string     `json:"vendor"`
-	CreatedAt            time.Time  `json:"created_at"`
 }
 
 // VersionHistoryList represents a list of version histories
@@ -119,8 +116,6 @@ func (v *VersionResponseFull) UnmarshalJSON(data []byte) error {
 		ActiveSupportEndDate *string `json:"active_support_end_date"`
 		SecuritySupportEndDate *string `json:"security_support_end_date"`
 		EOL                  *string `json:"eol_date"`
-		CreatedAt           *string `json:"created_at,omitempty"`
-		UpdatedAt           *string `json:"updated_at,omitempty"`
 		*Alias
 	}{
 		Alias: (*Alias)(v),
@@ -153,16 +148,6 @@ func (v *VersionResponseFull) UnmarshalJSON(data []byte) error {
 		v.ReleaseDate = time.Time{}
 	}
 
-	// Parse optional CreatedAt
-	if aux.CreatedAt != nil {
-		for _, layout := range layouts {
-			if t, err := time.Parse(layout, *aux.CreatedAt); err == nil {
-				v.CreatedAt = &t
-				break
-			}
-		}
-	}
-
 	// Parse nullable dates
 	if aux.ActiveSupportEndDate != nil {
 		for _, layout := range layouts {
@@ -188,14 +173,6 @@ func (v *VersionResponseFull) UnmarshalJSON(data []byte) error {
 			}
 		}
 	}
-	if aux.UpdatedAt != nil {
-		for _, layout := range layouts {
-			if t, err := time.Parse(layout, *aux.UpdatedAt); err == nil {
-				v.UpdatedAt = &t
-				break
-			}
-		}
-	}
 
 	return nil
 }
@@ -204,7 +181,6 @@ func (v *VersionResponseFull) UnmarshalJSON(data []byte) error {
 func (v *VersionHistory) UnmarshalJSON(data []byte) error {
 	type Alias VersionHistory
 	aux := &struct {
-		CreatedAt           string  `json:"created_at"`
 		ReleaseDate         *string `json:"release_date"`
 		ActiveSupportEndDate *string `json:"active_support_end_date"`
 		SecuritySupportEndDate *string `json:"security_support_end_date"`
@@ -218,24 +194,8 @@ func (v *VersionHistory) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	// Parse non-nullable dates
-	layouts := []string{"2006-01-02", "2006-01-02T15:04:05"}
-	var parseError error
-
-	for _, layout := range layouts {
-		if t, err := time.Parse(layout, aux.CreatedAt); err == nil {
-			v.CreatedAt = t
-			parseError = nil
-			break
-		} else {
-			parseError = err
-		}
-	}
-	if parseError != nil {
-		return fmt.Errorf("failed to parse CreatedAt: %v", parseError)
-	}
-
 	// Parse nullable dates
+	layouts := []string{"2006-01-02", "2006-01-02T15:04:05"}
 	if aux.ReleaseDate != nil {
 		for _, layout := range layouts {
 			if t, err := time.Parse(layout, *aux.ReleaseDate); err == nil {
@@ -490,7 +450,7 @@ func (p *VersionPrinter) PrintVersion(result *VersionResponseFull) {
 	}
 }
 
-// printFullVersion prints detailed version information
+// PrintFullVersion prints detailed version information
 func (p *VersionPrinter) printFullVersion(result *VersionResponseFull) {
 	fmt.Printf("Name: %s\n", result.Name)
 	fmt.Printf("Version: %s\n", result.Version)
@@ -508,13 +468,6 @@ func (p *VersionPrinter) printFullVersion(result *VersionResponseFull) {
 	}
 	if result.EOL != nil {
 		fmt.Printf("EOL Date: %s\n", formatTime(result.EOL))
-	}
-	//fmt.Printf("ID: %d\n", result.ID)
-	if result.CreatedAt != nil {
-		fmt.Printf("Created At: %s\n", formatTime(result.CreatedAt))
-	}
-	if result.UpdatedAt != nil {
-		fmt.Printf("Updated At: %s\n", formatTime(result.UpdatedAt))
 	}
 }
 
@@ -841,12 +794,6 @@ func (cr *CombinedResult) Print(outputFormat string) {
 			if full.EOL != nil {
 				fmt.Printf("EOL Date: %s\n", formatTime(full.EOL))
 			}
-			if full.CreatedAt != nil {
-				fmt.Printf("Created At: %s\n", formatTime(full.CreatedAt))
-			}
-			if full.UpdatedAt != nil {
-				fmt.Printf("Updated At: %s\n", formatTime(full.UpdatedAt))
-			}
 		}
 
 		// Print CVE information
@@ -897,6 +844,15 @@ func (c *VersionCheckCommand) Execute(args []string) (CheckResult, error) {
 	// Validate input parameters
 	if c.Name == "" {
 		return nil, fmt.Errorf("component name is required")
+	}
+
+	// Handle --history flag
+	if c.history {
+		versions, err := c.Service.GetVersions(c.Name)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get version history for component %q: %w", c.Name, err)
+		}
+		return versions, nil
 	}
 
 	// Get version information first
@@ -1059,11 +1015,7 @@ func (r VersionHistoryList) Print(outputFormat string) {
 				Version:            version.Version,
 				Vendor:             version.Vendor,
 				ReleaseDate:        formatTimeForOutput(version.ReleaseDate),
-				ActiveSupportEnd:   formatTimeForOutput(version.ActiveSupportEndDate),
-				SecuritySupportEnd: formatTimeForOutput(version.SecuritySupportEndDate),
 				EOLDate:            formatTimeForOutput(version.EOL),
-				//ID:                 version.ID,
-				CreatedAt:          version.CreatedAt.Format("2006-01-02"),
 			}
 		}
 
@@ -1081,16 +1033,19 @@ func (r VersionHistoryList) Print(outputFormat string) {
 		}
 		fmt.Println(string(data))
 	default:
+		// Print as table
+		headFmt := "%-12s %-12s %-18s %-20s %-12s\n"
+		rowFmt := "%-12s %-12s %-18s %-20s %-12s\n"
+		fmt.Printf(headFmt, "Version", "Release Date", "Active Support End", "Security Support End", "EOL Date")
+		fmt.Printf("%s\n", strings.Repeat("-", 74))
 		for _, version := range r {
-			fmt.Printf("Name: %s\n", version.ProductName)
-			fmt.Printf("Version: %s\n", version.Version)
-			fmt.Printf("Vendor: %s\n", version.Vendor)
-			fmt.Printf("Release Date: %s\n", formatTime(version.ReleaseDate))
-			fmt.Printf("Active Support End: %s\n", formatTime(version.ActiveSupportEndDate))
-			fmt.Printf("Security Support End: %s\n", formatTime(version.SecuritySupportEndDate))
-			fmt.Printf("EOL Date: %s\n", formatTime(version.EOL))
-			//fmt.Printf("ID: %d\n", version.ID)
-			fmt.Println("---")
+			fmt.Printf(rowFmt,
+				version.Version,
+				formatTime(version.ReleaseDate),
+				formatTime(version.ActiveSupportEndDate),
+				formatTime(version.SecuritySupportEndDate),
+				formatTime(version.EOL),
+			)
 		}
 	}
 }
@@ -1170,12 +1125,6 @@ func (r *VersionResponseFull) Print(outputFormat string) {
 	if r.Vendor != nil {
 		output.Vendor = *r.Vendor
 	}
-	if r.CreatedAt != nil {
-		output.CreatedAt = formatTimeForOutput(r.CreatedAt)
-	}
-	if r.UpdatedAt != nil {
-		output.UpdatedAt = formatTimeForOutput(r.UpdatedAt)
-	}
 
 	switch outputFormat {
 	case "json":
@@ -1203,11 +1152,5 @@ func (r *VersionResponseFull) Print(outputFormat string) {
 		fmt.Printf("Security Support End: %s\n", formatTime(r.SecuritySupportEndDate))
 		fmt.Printf("EOL Date: %s\n", formatTime(r.EOL))
 		//fmt.Printf("ID: %d\n", r.ID)
-		if r.CreatedAt != nil {
-			fmt.Printf("Created At: %s\n", formatTime(r.CreatedAt))
-		}
-		if r.UpdatedAt != nil {
-			fmt.Printf("Updated At: %s\n", formatTime(r.UpdatedAt))
-		}
 	}
 } 
