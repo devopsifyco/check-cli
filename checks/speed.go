@@ -178,7 +178,7 @@ func runSpeedWindows() (SpeedResult, error) {
 	}
 
 	// Run speedtest with JSON output
-	cmd := exec.Command(speedtestPath, "--accept-license=true --format=json")
+	cmd := exec.Command(speedtestPath, "--accept-license=true", "--format=json")
 	output, err := cmd.Output()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
@@ -220,7 +220,7 @@ func runSpeedUnix() (SpeedResult, error) {
 	}
 
 	// Try to run speedtest command
-	cmd := exec.Command(speedtestPath, "--accept-license=true --format=json")
+	cmd := exec.Command(speedtestPath, "--accept-license=true", "--format=json")
 	// Capture both stdout and stderr
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
