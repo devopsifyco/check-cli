@@ -31,6 +31,7 @@ Manual Download:
 
 Command Line Download:
 ^^^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: bash
 
    curl -LO https://github.com/devopsifyco/check-cli/releases/download/<version>/check-linux-amd64
