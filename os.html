@@ -53,7 +53,9 @@
 <li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">OS Command</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-output">Example Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-output-text">Example Output (text)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-output-json">Example Output (JSON)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a></li>
@@ -88,15 +90,97 @@
 <p>Display system information.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>os
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>os<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>format<span class="o">]</span>
 </pre></div>
 </div>
 </section>
-<section id="example-output">
-<h2>Example Output<a class="headerlink" href="#example-output" title="Permalink to this heading"></a></h2>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>-f, –format: Output format (optional, default: json)</p></li>
+</ul>
+</section>
+<section id="example-output-text">
+<h2>Example Output (text)<a class="headerlink" href="#example-output-text" title="Permalink to this heading"></a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>OS: Windows 10
 Architecture: amd64
-Kernel Version: 10.0.22631
+CPUs: 8
+Go Version: go1.21.0
+Uptime: 2h30m
+
+Installed Software:
+Name: Google Chrome
+  Version: 114.0.5735.199
+  Publisher: Google LLC
+  Install Date: 2023-01-01
+
+CPU Information:
+CPU 0:
+  Model: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
+  Cores: 8
+  Frequency: 3600.00 MHz
+  Core 0 Usage: 10.00%
+  ...
+
+Memory Information:
+Total: 32.00 GB
+Used: 12.00 GB
+Usage: 37.50%
+
+Disk Information:
+Path: C:\
+Total: 512.00 GB
+Used: 200.00 GB
+Usage: 39.06%
+
+Network Information:
+...
+</pre></div>
+</div>
+</section>
+<section id="example-output-json">
+<h2>Example Output (JSON)<a class="headerlink" href="#example-output-json" title="Permalink to this heading"></a></h2>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;os&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Windows 10&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;arch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;amd64&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;cpus&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;go_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;go1.21.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;uptime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2h30m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;software_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Google Chrome&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;114.0.5735.199&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;publisher&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Google LLC&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;install_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;cpu_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;model_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cores&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mhz&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3600.00</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;usage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">12.0</span><span class="p">,</span><span class="w"> </span><span class="mf">8.0</span><span class="p">,</span><span class="w"> </span><span class="mf">9.0</span><span class="p">,</span><span class="w"> </span><span class="mf">11.0</span><span class="p">,</span><span class="w"> </span><span class="mf">7.0</span><span class="p">,</span><span class="w"> </span><span class="mf">13.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;memory_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">34359738368</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;memory_used&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12884901888</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;memory_percent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">37.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;disk_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C:\\&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">549755813888</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;used&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">214748364800</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;used_percent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">39.06</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;network_info&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ethernet&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mac&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:1A:2B:3C:4D:5E&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.1.100&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>

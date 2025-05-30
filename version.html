@@ -100,6 +100,7 @@
 <li><p>–full: Show full version information including release dates and support timeline</p></li>
 <li><p>–history: Show version history</p></li>
 <li><p>–client: Check local client version instead of remote API</p></li>
+<li><p>–cve: Include CVE information for the specified version (optional)</p></li>
 <li><p>-o, –output: Output format (json, yaml)</p></li>
 </ul>
 </section>
@@ -124,26 +125,64 @@ check<span class="w"> </span>version<span class="w"> </span>docker<span class="w
 check<span class="w"> </span>version<span class="w"> </span>kubectl<span class="w"> </span>--client
 </pre></div>
 </div>
-<p>Example output (full format):
-.. code-block:: text</p>
-<blockquote>
-<div><p>Name: nginx
-Version: 1.24.0
-Vendor: NGINX
-Release Date: 2023-04-11
-Active Support End: 2024-04-11
-Security Support End: 2024-10-11
-EOL Date: 2025-04-11
-ID: 123
-Created At: 2023-04-11</p>
-</div></blockquote>
-<p>Example output (specific version):
-.. code-block:: text</p>
-<blockquote>
-<div><p>Name: istio
-Version: 1.23
-EOL Date: 2025-04-16</p>
-</div></blockquote>
+<p>Example output (history, table format):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Version      Release Date  Active Support  Security Support  EOL Date
+------------ ------------ -------------- --------------- ------------
+1.28.0      2024-06-01    2025-06-01     2025-12-01       2026-06-01
+1.27.0      2023-12-01    2024-12-01     2025-06-01       2025-12-01
+1.26.0      2023-06-01    2024-06-01     2024-12-01       2025-06-01
+...         ...           ...            ...              ...
+</pre></div>
+</div>
+<p>Example output (full format):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nginx&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.24.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;vendor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NGINX&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-04-11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active_support_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-04-11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;security_support_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-10-11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;eol_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-04-11&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example output (with CVEs):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;16.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vendor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PostgreSQL&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;release_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;eol_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-01&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;cves&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;cve_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CVE-2024-12345&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;published&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;published_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Example vulnerability in postgresql&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;references&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://example.com/cve/CVE-2024-12345&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example output (table, text format with –cve):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Name: postgresql
+Version: 16.4
+EOL Date: 2026-01-01
+
+CVEs:
+------------------  ----------  ------  --------------------------------------------------
+CVE ID              Published   Score   Title
+------------------  ----------  ------  --------------------------------------------------
+CVE-2025-12345      2024-02-01  8.2     Example vulnerability in postgresql
+------------------  ----------  ------  --------------------------------------------------
+</pre></div>
+</div>
 </section>
 
 

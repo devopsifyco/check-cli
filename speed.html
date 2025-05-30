@@ -53,7 +53,9 @@
 <li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Speed Command</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-output">Example Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-output-text">Example Output (text)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-output-json">Example Output (JSON)</a></li>
 </ul>
 </li>
 </ul>
@@ -87,15 +89,33 @@
 <p>Perform network speed test.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>speed
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>speed<span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>format<span class="o">]</span>
 </pre></div>
 </div>
 </section>
-<section id="example-output">
-<h2>Example Output<a class="headerlink" href="#example-output" title="Permalink to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Download: 100 Mbps
-Upload: 20 Mbps
-Latency: 15 ms
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>-o, –output: Output format (optional: json, yaml)</p></li>
+</ul>
+</section>
+<section id="example-output-text">
+<h2>Example Output (text)<a class="headerlink" href="#example-output-text" title="Permalink to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Download: 100.00 Mbps
+Upload: 20.00 Mbps
+Ping: 15.00 ms
+Server: ExampleServer (US) - ExampleSponsor
+</pre></div>
+</div>
+</section>
+<section id="example-output-json">
+<h2>Example Output (JSON)<a class="headerlink" href="#example-output-json" title="Permalink to this heading"></a></h2>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;download&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;bandwidth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12500000</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;upload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;bandwidth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2500000</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ping&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;latency&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;server&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ExampleServer&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;US&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sponsor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ExampleSponsor&quot;</span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
