@@ -746,9 +746,21 @@ func NewVersionCheckCommand(apiKey string, outputFormat string, fullOutput bool,
 	}
 }
 
-// sortCVEs sorts CVEs by published_date (most recent first), score, priority, and severity
+// sortCVEs sorts CVEs by score (higher first) as the primary key, and published_date (most recent first) as the secondary key
 func sortCVEs(cves []CVEResponse) {
 	sort.Slice(cves, func(i, j int) bool {
+		// Compare by score (higher first)
+		var scoreI, scoreJ float64
+		if cves[i].Score != nil {
+			scoreI = *cves[i].Score
+		}
+		if cves[j].Score != nil {
+			scoreJ = *cves[j].Score
+		}
+		if scoreI != scoreJ {
+			return scoreI > scoreJ
+		}
+
 		// Compare by published date (most recent first)
 		parseTime := func(s string) time.Time {
 			t, err := time.Parse(time.RFC3339, s)
@@ -761,18 +773,6 @@ func sortCVEs(cves []CVEResponse) {
 		timeJ := parseTime(cves[j].PublishedDate)
 		if !timeI.Equal(timeJ) {
 			return timeI.After(timeJ)
-		}
-
-		// Compare by score (higher first)
-		var scoreI, scoreJ float64
-		if cves[i].Score != nil {
-			scoreI = *cves[i].Score
-		}
-		if cves[j].Score != nil {
-			scoreJ = *cves[j].Score
-		}
-		if scoreI != scoreJ {
-			return scoreI > scoreJ
 		}
 
 		// No Priority/Severity fields, so skip those
@@ -797,17 +797,17 @@ func NewCombinedResult(version interface{}, cves []CVEResponse, fullOutput bool)
 }
 
 // Print implements CheckResult interface
-func (c *CombinedResult) Print(outputFormat string) {
+func (cr *CombinedResult) Print(outputFormat string) {
 	switch outputFormat {
 	case "json":
-		jsonData, err := json.MarshalIndent(c, "", "  ")
+		jsonData, err := json.MarshalIndent(cr, "", "  ")
 		if err != nil {
 			fmt.Printf("Error formatting JSON: %v\n", err)
 			return
 		}
 		fmt.Println(string(jsonData))
 	case "yaml":
-		yamlData, err := yaml.Marshal(c)
+		yamlData, err := yaml.Marshal(cr)
 		if err != nil {
 			fmt.Printf("Error formatting YAML: %v\n", err)
 			return
@@ -815,11 +815,11 @@ func (c *CombinedResult) Print(outputFormat string) {
 		fmt.Println(string(yamlData))
 	default:
 		// Print version information
-		if short, ok := c.Version.(*VersionResponseShort); ok {
+		if short, ok := cr.Version.(*VersionResponseShort); ok {
 			fmt.Printf("Name: %s\n", short.Name)
 			fmt.Printf("Version: %s\n", short.Version)
 			fmt.Printf("EOL Date: %s\n", formatTime(short.EOL))
-		} else if full, ok := c.Version.(*VersionResponseFull); ok {
+		} else if full, ok := cr.Version.(*VersionResponseFull); ok {
 			fmt.Printf("Name: %s\n", full.Name)
 			fmt.Printf("Version: %s\n", full.Version)
 			if full.Vendor != nil {
@@ -837,7 +837,6 @@ func (c *CombinedResult) Print(outputFormat string) {
 			if full.EOL != nil {
 				fmt.Printf("EOL Date: %s\n", formatTime(full.EOL))
 			}
-			//fmt.Printf("ID: %d\n", full.ID)
 			if full.CreatedAt != nil {
 				fmt.Printf("Created At: %s\n", formatTime(full.CreatedAt))
 			}
@@ -847,34 +846,75 @@ func (c *CombinedResult) Print(outputFormat string) {
 		}
 
 		// Print CVE information
-		if len(c.CVEs) > 0 {
+		if len(cr.CVEs) > 0 {
 			fmt.Println("\nCVEs:")
-			for _, cve := range c.CVEs {
-				fmt.Printf("\nCVE ID: %s\n", cve.CVEID)
-				fmt.Printf("Title: %s\n", cve.Title)
-				if c.fullOutput {
-					fmt.Printf("State: %s\n", cve.State)
-					fmt.Printf("Published Date: %s\n", cve.PublishedDate)
-					if cve.Score != nil {
-						fmt.Printf("Score: %.2f\n", *cve.Score)
-					} else {
-						fmt.Printf("Score: null\n")
-					}
-					if len(cve.References) > 0 {
-						fmt.Println("References:")
-						for _, ref := range cve.References {
-							fmt.Printf("  - %s\n", ref)
-						}
-					}
+			if cr.fullOutput {
+				// Print table header
+				headFmt := "| %-18s | %-40s | %-10s | %-20s | %-7s|\n"
+				sep := "+--------------------+------------------------------------------+------------+----------------------+---------+"
+				fmt.Println(sep)
+				if outputFormat != "json" && outputFormat != "yaml" {
+					fmt.Printf(headFmt, "CVE ID", "Title", "State", "Published", "Score")
 				} else {
-					fmt.Printf("Published: %s\n", cve.PublishedDate)
+					fmt.Printf(headFmt, "CVE ID", "Title", "State", "Published Date", "Score")
+				}
+				fmt.Println(sep)
+				for _, cve := range cr.CVEs {
+					title := cve.Title
+					if len(title) > 40 {
+						title = title[:37] + "..."
+					}
+					score := "null"
 					if cve.Score != nil {
-						fmt.Printf("Score: %.2f\n", *cve.Score)
+						score = fmt.Sprintf("%.2f", *cve.Score)
+					}
+					// Format published date to only show the date
+					publishedDate := cve.PublishedDate
+					if t, err := time.Parse(time.RFC3339, cve.PublishedDate); err == nil {
+						publishedDate = t.Format("2006-01-02")
+					}
+					if outputFormat != "json" && outputFormat != "yaml" {
+						fmt.Printf(headFmt, cve.CVEID, title, cve.State, publishedDate, score)
+					} else {
+						fmt.Printf(headFmt, cve.CVEID, title, cve.State, publishedDate, score)
 					}
 				}
-				fmt.Println("---")
+				fmt.Println(sep)
+			} else {
+				// Print table for non-fullOutput as well
+				headFmt := "| %-18s | %-40s | %-10s | %-20s | %-7s|\n"
+				sep := "+--------------------+------------------------------------------+------------+----------------------+---------+"
+				fmt.Println(sep)
+				if outputFormat != "json" && outputFormat != "yaml" {
+					fmt.Printf(headFmt, "CVE ID", "Title", "State", "Published", "Score")
+				} else {
+					fmt.Printf(headFmt, "CVE ID", "Title", "State", "Published Date", "Score")
+				}
+				fmt.Println(sep)
+				for _, cve := range cr.CVEs {
+					title := cve.Title
+					if len(title) > 40 {
+						title = title[:37] + "..."
+					}
+					score := "null"
+					if cve.Score != nil {
+						score = fmt.Sprintf("%.2f", *cve.Score)
+					}
+					// Format published date to only show the date
+					publishedDate := cve.PublishedDate
+					if t, err := time.Parse(time.RFC3339, cve.PublishedDate); err == nil {
+						publishedDate = t.Format("2006-01-02")
+					}
+					if outputFormat != "json" && outputFormat != "yaml" {
+						fmt.Printf(headFmt, cve.CVEID, title, cve.State, publishedDate, score)
+					} else {
+						fmt.Printf(headFmt, cve.CVEID, title, cve.State, publishedDate, score)
+					}
+				}
+				fmt.Println(sep)
 			}
 		}
+
 	}
 }
 
