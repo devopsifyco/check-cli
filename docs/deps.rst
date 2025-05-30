@@ -45,6 +45,7 @@ Example: Check dependencies and include CVE information
    check deps ./checks/dependencies/samples/pom.xml --cve -o json
 
 Sample output with CVEs:
+
 .. code-block:: json
 
    {
