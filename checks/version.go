@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 	"gopkg.in/yaml.v3"
+	"github.com/devopsifyco/check-cli/checks/utilities/output"
 )
 
 const (
@@ -798,13 +799,12 @@ func (cr *CombinedResult) Print(outputFormat string) {
 
 		// Print CVE information
 		if len(cr.CVEs) > 0 {
-			// Use deps.go style table
-			sep := "  " + strings.Repeat("-", 18) + "  " + strings.Repeat("-", 10) + "  " + strings.Repeat("-", 6) + "  " + strings.Repeat("-", 50)
-			headFmt := "  %-18s  %-10s  %-6s  %s\n"
-			fmt.Println(sep)
-			fmt.Printf(headFmt, "CVE ID", "Published", "Score", "Title")
-			fmt.Println(sep)
-			for _, cve := range cr.CVEs {
+			// Use output.PrintTable for CVEs
+			header := []string{"CVE ID", "Published", "Score", "Title"}
+			colWidths := []int{18, 10, 6, 50}
+			rightAlign := []bool{false, false, true, false}
+			rows := make([][]string, len(cr.CVEs))
+			for i, cve := range cr.CVEs {
 				cveID := cve.CVEID
 				if len(cveID) > 18 {
 					cveID = cveID[:18]
@@ -818,12 +818,9 @@ func (cr *CombinedResult) Print(outputFormat string) {
 					score = fmt.Sprintf("%.1f", *cve.Score)
 				}
 				title := cve.Title
-				if len(title) > 50 {
-					title = title[:47] + "..."
-				}
-				fmt.Printf(headFmt, cveID, published, score, title)
+				rows[i] = []string{cveID, published, score, title}
 			}
-			fmt.Println(sep)
+			output.PrintTable(header, rows, colWidths, rightAlign)
 		} else {
 			fmt.Println("No CVEs found")
 		}
@@ -1034,19 +1031,20 @@ func (r VersionHistoryList) Print(outputFormat string) {
 		fmt.Println(string(data))
 	default:
 		// Print as table
-		headFmt := "%-12s %-12s %-18s %-20s %-12s\n"
-		rowFmt := "%-12s %-12s %-18s %-20s %-12s\n"
-		fmt.Printf(headFmt, "Version", "Release Date", "Active Support End", "Security Support End", "EOL Date")
-		fmt.Printf("%s\n", strings.Repeat("-", 74))
-		for _, version := range r {
-			fmt.Printf(rowFmt,
+		header := []string{"Version", "Release Date", "Active Support End", "Security Support End", "EOL Date"}
+		colWidths := []int{12, 12, 18, 20, 12}
+		rightAlign := []bool{false, true, true, true, true}
+		rows := make([][]string, len(r))
+		for i, version := range r {
+			rows[i] = []string{
 				version.Version,
 				formatTime(version.ReleaseDate),
 				formatTime(version.ActiveSupportEndDate),
 				formatTime(version.SecuritySupportEndDate),
 				formatTime(version.EOL),
-			)
+			}
 		}
+		output.PrintTable(header, rows, colWidths, rightAlign)
 	}
 }
 
