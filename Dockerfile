@@ -65,10 +65,10 @@ RUN echo 'build_with_retry() {' > /build.sh && \
 
 # Build for multiple platforms with retry logic
 RUN . /build.sh && build_with_retry windows amd64 /dist/check.exe
-#RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
-#RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
-#RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
-#RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
+RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
+RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
+RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
+RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
