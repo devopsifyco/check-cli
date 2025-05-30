@@ -851,82 +851,34 @@ func (cr *CombinedResult) Print(outputFormat string) {
 
 		// Print CVE information
 		if len(cr.CVEs) > 0 {
-			fmt.Println("\nCVEs:")
-			if cr.fullOutput {
-				// Print table header
-				headFmt := "| %-16s | %-60s | %-10s | %6s |\n"
-				sep := "+------------------+--------------------------------------------------------------+------------+--------+"
-				fmt.Println(sep)
-				if outputFormat != "json" && outputFormat != "yaml" {
-					fmt.Printf(headFmt, "CVE ID", "Title", "Published", "Score")
-				} else {
-					fmt.Printf(headFmt, "CVE ID", "Title", "Published Date", "Score")
+			// Use deps.go style table
+			sep := "  " + strings.Repeat("-", 18) + "  " + strings.Repeat("-", 10) + "  " + strings.Repeat("-", 6) + "  " + strings.Repeat("-", 50)
+			headFmt := "  %-18s  %-10s  %-6s  %s\n"
+			fmt.Println(sep)
+			fmt.Printf(headFmt, "CVE ID", "Published", "Score", "Title")
+			fmt.Println(sep)
+			for _, cve := range cr.CVEs {
+				cveID := cve.CVEID
+				if len(cveID) > 18 {
+					cveID = cveID[:18]
 				}
-				fmt.Println(sep)
-				for _, cve := range cr.CVEs {
-					title := cve.Title
-					if len(title) > 60 {
-						title = title[:57] + "..."
-					}
-					score := "null"
-					if cve.Score != nil {
-						score = fmt.Sprintf("%.2f", *cve.Score)
-					}
-					// Format published date to only show the date (10 chars)
-					publishedDate := cve.PublishedDate
-					if t, err := time.Parse(time.RFC3339, cve.PublishedDate); err == nil {
-						publishedDate = t.Format("2006-01-02")
-					}
-					// Truncate CVE ID to 16 chars if longer
-					cveID := cve.CVEID
-					if len(cveID) > 16 {
-						cveID = cveID[:16]
-					}
-					if outputFormat != "json" && outputFormat != "yaml" {
-						fmt.Printf(headFmt, cveID, title, publishedDate, score)
-					} else {
-						fmt.Printf(headFmt, cveID, title, publishedDate, score)
-					}
+				published := cve.PublishedDate
+				if len(published) >= 10 {
+					published = published[:10]
 				}
-				fmt.Println(sep)
-			} else {
-				// Print table for non-fullOutput as well
-				headFmt := "| %-16s | %-60s | %-10s | %6s |\n"
-				sep := "+------------------+--------------------------------------------------------------+------------+--------+"
-				fmt.Println(sep)
-				if outputFormat != "json" && outputFormat != "yaml" {
-					fmt.Printf(headFmt, "CVE ID", "Title", "Published", "Score")
-				} else {
-					fmt.Printf(headFmt, "CVE ID", "Title", "Published Date", "Score")
+				score := ""
+				if cve.Score != nil {
+					score = fmt.Sprintf("%.1f", *cve.Score)
 				}
-				fmt.Println(sep)
-				for _, cve := range cr.CVEs {
-					title := cve.Title
-					if len(title) > 60 {
-						title = title[:57] + "..."
-					}
-					score := "null"
-					if cve.Score != nil {
-						score = fmt.Sprintf("%.2f", *cve.Score)
-					}
-					// Format published date to only show the date (10 chars)
-					publishedDate := cve.PublishedDate
-					if t, err := time.Parse(time.RFC3339, cve.PublishedDate); err == nil {
-						publishedDate = t.Format("2006-01-02")
-					}
-					// Truncate CVE ID to 16 chars if longer
-					cveID := cve.CVEID
-					if len(cveID) > 16 {
-						cveID = cveID[:16]
-					}
-					if outputFormat != "json" && outputFormat != "yaml" {
-						fmt.Printf(headFmt, cveID, title, publishedDate, score)
-					} else {
-						fmt.Printf(headFmt, cveID, title, publishedDate, score)
-					}
+				title := cve.Title
+				if len(title) > 50 {
+					title = title[:47] + "..."
 				}
-				fmt.Println(sep)
+				fmt.Printf(headFmt, cveID, published, score, title)
 			}
+			fmt.Println(sep)
+		} else {
+			fmt.Println("No CVEs found")
 		}
 
 	}
