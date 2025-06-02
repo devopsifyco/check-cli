@@ -47,18 +47,27 @@ Building from Source
 --------------------
 You can build the CLI tool locally for all supported platforms using Docker. See the README for platform-specific instructions.
 
-Commands
+CLI
 --------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Commands
+   :caption: CLI commands
 
    deps
    version
    ssl
    os
    speed
+
+MCP
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: MCP Usages
+
+   mcp_client
 
 global_flags
 exit_codes

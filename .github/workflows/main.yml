@@ -4,11 +4,11 @@ on:
   push:
     paths-ignore:
       - 'docs/**'
-    branches: [ master ]
+    branches: [ refactor ]
   pull_request:
     paths-ignore:
       - 'docs/**'
-    branches: [ master ]
+    branches: [ refactor ]
   workflow_dispatch:
     inputs:
       bump:
@@ -120,7 +120,7 @@ jobs:
 
   release:
     needs: [update-version]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/refactor'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -190,7 +190,7 @@ jobs:
 
   docs-build-deploy:
     needs: update-version
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/refactor'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
