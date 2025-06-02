@@ -119,7 +119,7 @@ jobs:
           path: dist/*
 
   release:
-    needs: [build]
+    needs: [build, update-version]
     if: github.event_name == 'push' && github.ref == 'refs/heads/refactor'
     runs-on: ubuntu-latest
     steps:
