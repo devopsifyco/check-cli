@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check MCP Server &mdash; Check Tool  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
+      <script src="_static/jquery.js"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Speed Command" href="speed.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Check Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">CLI commands</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deps.html">Deps Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html#arguments">Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html#flags">Flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html#supported-components-for-local-version-check">Supported Components for Local Version Check</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">MCP Usages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Check MCP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#available-tools">Available Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-tool-call">Example Tool Call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-uv-recommended">Using uv (recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-pip">Using pip</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configure-for-claude-app">Configure for Claude.app</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure-for-vs-code">Configure for VS Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Check Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Check MCP Server</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/devopsifyco/check-cli/blob/master/docs/mcp_client.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="check-mcp-server">
+<h1>Check MCP Server<a class="headerlink" href="#check-mcp-server" title="Permalink to this heading"></a></h1>
+<p>A Model Context Protocol server that provides CVE checking capabilities via the Opsify API. This server enables LLMs to search for and retrieve CVE (Common Vulnerabilities and Exposures) information using a flexible set of filters.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This server can access external APIs and may represent a security risk if misconfigured. Ensure your API key and usage comply with your organization’s security policies.</p>
+</div>
+<section id="available-tools">
+<h2>Available Tools<a class="headerlink" href="#available-tools" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">search_cve</span></code> - Search CVEs with various filters via the Opsify API.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cve_id</span></code> (string, optional): CVE ID to search for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (string, optional): Title to search in CVE description</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code> (string, optional): State to filter by</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">priority</span></code> (string, optional): Priority level to filter by</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">severity</span></code> (string, optional): Severity level to filter by</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">score</span></code> (float, optional): CVSS score to filter by</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">product_name</span></code> (string, optional): Product name to filter affected products</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">product_version</span></code> (string, optional): Product version to filter affected products</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vendor</span></code> (string, optional): Vendor name to filter affected products</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_date</span></code> (string, optional): Start date for filtering (YYYY-MM-DD or ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_date</span></code> (string, optional): End date for filtering (YYYY-MM-DD or ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skip</span></code> (int, optional): Number of records to skip (pagination)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limit</span></code> (int, optional): Maximum number of records to return (pagination)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search_release</span></code> - Search releases with optional filters for vendor, product name, and date range. Supports pagination.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">vendor</span></code> (string, optional): Vendor name to filter by (case-insensitive)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">product_name</span></code> (string, optional): Product name to filter by (case-insensitive)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_date</span></code> (string, optional): Start date (inclusive) for filtering (YYYY-MM-DD or ISO datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_date</span></code> (string, optional): End date (inclusive) for filtering (YYYY-MM-DD or ISO datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_field</span></code> (string, optional): Which date field to filter on (e.g., “release_date”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page</span></code> (int, optional): Page number (starting from 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page_size</span></code> (int, optional): Number of items per page</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_version_cves</span></code> - Get CVEs for a specific version of a product. Optionally filter by vendor. Uses caching (TTL: 1 day).</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">product_name</span></code> (string, required): Product name (e.g., ‘nginx’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version</span></code> (string, required): Specific version to retrieve CVEs for (e.g., ‘1.0.0’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vendor</span></code> (string, optional): Vendor name to filter by (case-insensitive)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>check_mcp
+</pre></div>
+</div>
+<p>Or as a script/entry point:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check-mcp
+</pre></div>
+</div>
+</section>
+<section id="example-tool-call">
+<h2>Example Tool Call<a class="headerlink" href="#example-tool-call" title="Permalink to this heading"></a></h2>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;search_cve&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;product_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nginx&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;severity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;from_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<section id="using-uv-recommended">
+<h3>Using uv (recommended)<a class="headerlink" href="#using-uv-recommended" title="Permalink to this heading"></a></h3>
+<p>When using <a class="reference external" href="https://docs.astral.sh/uv/">uv</a> no specific installation is needed. We will use <a class="reference external" href="https://docs.astral.sh/uv/guides/tools/">uvx</a> to directly run <em>check-mcp</em>.</p>
+</section>
+<section id="using-pip">
+<h3>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this heading"></a></h3>
+<p>Alternatively you can install <code class="docutils literal notranslate"><span class="pre">check-mcp</span></code> via pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>check-mcp
+</pre></div>
+</div>
+<p>After installation, you can run it as a script using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>check_mcp
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h2>
+<section id="configure-for-claude-app">
+<h3>Configure for Claude.app<a class="headerlink" href="#configure-for-claude-app" title="Permalink to this heading"></a></h3>
+<p>Add to your Claude settings:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Using uvx</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uvx&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;check-mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Using docker</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-i&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--rm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp/check&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Using pip installation</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;check_mcp&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="configure-for-vs-code">
+<h3>Configure for VS Code<a class="headerlink" href="#configure-for-vs-code" title="Permalink to this heading"></a></h3>
+<p>For quick installation, use one of the one-click install buttons below:</p>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=check&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22check-mcp%22%5D%7D"><img src="https://img.shields.io/badge/VS_Code-UV-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white"/></a>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=check&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22check-mcp%22%5D%7D&quality=insiders"><img src="https://img.shields.io/badge/VS_Code_Insiders-UV-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white"/></a>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=check&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fcheck%22%5D%7D"><img src="https://img.shields.io/badge/VS_Code-Docker-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white"/></a>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=check&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22mcp%2Fcheck%22%5D%7D&quality=insiders"><img src="https://img.shields.io/badge/VS_Code_Insiders-Docker-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white"/></a><p>For manual installation, add the following JSON block to your User Settings (JSON) file in VS Code. You can do this by pressing <code class="docutils literal notranslate"><span class="pre">Ctrl</span> <span class="pre">+</span> <span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">P</span></code> and typing <code class="docutils literal notranslate"><span class="pre">Preferences:</span> <span class="pre">Open</span> <span class="pre">User</span> <span class="pre">Settings</span> <span class="pre">(JSON)</span></code>.</p>
+<p>Optionally, you can add it to a file called <code class="docutils literal notranslate"><span class="pre">.vscode/mcp.json</span></code> in your workspace. This will allow you to share the configuration with others.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mcp</span></code> key is needed when using the <code class="docutils literal notranslate"><span class="pre">mcp.json</span></code> file.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Using uvx</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uvx&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;check-mcp&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Using Docker</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;docker&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-i&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--rm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mcp/check&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this heading"></a></h2>
+<p>You can use the MCP inspector to debug the server. For uvx installations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>uvx<span class="w"> </span>check-mcp
+</pre></div>
+</div>
+<p>Or if you’ve installed the package in a specific directory or are developing on it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>path/to/servers/src/check
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>check-mcp
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="speed.html" class="btn btn-neutral float-left" title="Speed Command" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright DevOpsify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
