@@ -66,8 +66,8 @@ jobs:
           # Update FILEVERSION and PRODUCTVERSION in resource.rc
           sed -i -E "s/^(FILEVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
           sed -i -E "s/^(PRODUCTVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
-          sed -i -E "s/(\"FileVersion\", \')[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
-          sed -i -E "s/(\"ProductVersion\", \')[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
+          sed -i -E "s/(VALUE +\"FileVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
+          sed -i -E "s/(VALUE +\"ProductVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
 
       - name: Commit and push changes
         if: github.event_name == 'pull_request'
