@@ -1,4 +1,4 @@
-Version Command
+Check Version
 ============
 
 DevOpsify Check Tool version information for components, supporting both local and remote version lookups.

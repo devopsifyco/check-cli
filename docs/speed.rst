@@ -1,4 +1,4 @@
-Speed Command
+Check Speed
 =============
 
 Perform network speed test.
