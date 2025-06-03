@@ -1,4 +1,4 @@
-Deps Command
+Deps
 ============
 
 Analyzes project dependencies from various package manager files.
@@ -15,8 +15,8 @@ Options
 - -o, --output: Output format (optional: json, yaml)
 - --cve: Include CVE information for each dependency (optional)
 
-Supported Package Managers and Files
------------------------------------
+Supported Package Managers
+--------------------------
 
 +----------------+-----------------------------------------------+---------------------------------------------+
 | Package Manager| File(s)                                       | Features                                    |

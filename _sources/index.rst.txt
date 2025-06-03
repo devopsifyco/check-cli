@@ -52,7 +52,7 @@ CLI
 
 .. toctree::
    :maxdepth: 2
-   :caption: CLI
+   :caption: CLI Commands
 
    deps
    version
@@ -65,7 +65,7 @@ MCP
 
 .. toctree::
    :maxdepth: 2
-   :caption: MCP Server
+   :caption: MCP Servers
 
    mcp_client
    mcp_server

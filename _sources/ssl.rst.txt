@@ -1,4 +1,4 @@
-SSL Command
+Check SSL
 ===========
 
 Validate SSL certificates for domains.
