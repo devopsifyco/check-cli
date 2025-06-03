@@ -65,14 +65,20 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           next_version="${{ steps.bump_version.outputs.next_version }}"
+          # Update download links
           sed -i "s|/download/[0-9]\+\.[0-9]\+\.[0-9]\+/|/download/$next_version/|g" README.md docs/index.rst
+          # Update FILEVERSION and PRODUCTVERSION in resource.rc
+          sed -i -E "s/^(FILEVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
+          sed -i -E "s/^(PRODUCTVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
+          sed -i -E "s/(\"FileVersion\", \"))[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
+          sed -i -E "s/(\"ProductVersion\", \"))[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
 
       - name: Commit and push changes
         if: github.event_name == 'pull_request'
         run: |
           git config user.name "DevOpsify"
           git config user.email "devopsifyco@gmail.com"
-          git add README.md docs/index.rst
+          git add README.md docs/index.rst resource.rc
           git commit -m "docs: update README.md download links for ${{ steps.bump_version.outputs.next_version }}" || echo "No changes to commit"
           export GIT_EDITOR=true
           git pull --rebase origin ${GITHUB_HEAD_REF} || {
