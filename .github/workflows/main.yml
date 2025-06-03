@@ -1,13 +1,9 @@
 name: Build & Release
 
 on:
-  push:
-    paths-ignore:
-      - 'docs/**'
+  push:    
     branches: [ master ]
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
+  pull_request:    
     branches: [ master ]
   workflow_dispatch:
     inputs:
@@ -17,40 +13,7 @@ on:
         default: 'patch'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        run: docker build -t check-builder .
-
-      - name: Create container from image
-        run: docker create --name check-builder-container check-builder
-
-      - name: Copy binaries from container
-        run: |
-          mkdir -p dist
-          docker cp check-builder-container:/dist/. dist/
-
-      - name: Clean up container
-        run: docker rm check-builder-container
-
-      - name: List built files
-        run: ls -l dist
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/*
-
   update-version:
-    needs: [build]
     runs-on: ubuntu-latest
     outputs:
       next_version: ${{ steps.bump_version.outputs.next_version }}
@@ -98,14 +61,20 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           next_version="${{ steps.bump_version.outputs.next_version }}"
+          # Update download links
           sed -i "s|/download/[0-9]\+\.[0-9]\+\.[0-9]\+/|/download/$next_version/|g" README.md docs/index.rst
+          # Update FILEVERSION and PRODUCTVERSION in resource.rc
+          sed -i -E "s/^(FILEVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
+          sed -i -E "s/^(PRODUCTVERSION +)[0-9]+,[0-9]+,[0-9]+/\1${next_version//./,}/" resource.rc
+          sed -i -E "s/(VALUE +\"FileVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
+          sed -i -E "s/(VALUE +\"ProductVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
 
       - name: Commit and push changes
         if: github.event_name == 'pull_request'
         run: |
           git config user.name "DevOpsify"
           git config user.email "devopsifyco@gmail.com"
-          git add README.md docs/index.rst
+          git add README.md docs/index.rst resource.rc
           git commit -m "docs: update README.md download links for ${{ steps.bump_version.outputs.next_version }}" || echo "No changes to commit"
           export GIT_EDITOR=true
           git pull --rebase origin ${GITHUB_HEAD_REF} || {
@@ -118,8 +87,41 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  release:
+  build:
     needs: [update-version]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t check-builder .
+
+      - name: Create container from image
+        run: docker create --name check-builder-container check-builder
+
+      - name: Copy binaries from container
+        run: |
+          mkdir -p dist
+          docker cp check-builder-container:/dist/. dist/
+
+      - name: Clean up container
+        run: docker rm check-builder-container
+
+      - name: List built files
+        run: ls -l dist
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  release:
+    needs: [build, update-version]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,4 @@
-OS Command
+Check OS
 ==========
 
 Display system information.

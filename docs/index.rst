@@ -34,31 +34,41 @@ Command Line Download:
 
 .. code-block:: bash
 
-   curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.6/check-linux-amd64
+   curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64
    chmod +x check-linux-amd64
    ./check-linux-amd64 --help
 
 .. code-block:: powershell
 
-   Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.6/check.exe" -OutFile "check.exe"
+   Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe" -OutFile "check.exe"
    .\check.exe --help
 
 Building from Source
 --------------------
 You can build the CLI tool locally for all supported platforms using Docker. See the README for platform-specific instructions.
 
-Commands
+CLI
 --------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Commands
+   :caption: CLI Commands
 
    deps
    version
    ssl
    os
    speed
+
+MCP
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: MCP Servers
+
+   mcp_client
+   mcp_server
 
 global_flags
 exit_codes

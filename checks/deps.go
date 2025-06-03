@@ -3,7 +3,6 @@ package checks
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/devopsifyco/check-cli/checks/dependencies"
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
@@ -162,25 +161,28 @@ func (r *DepsResult) Print(outputFormat string) {
 				fmt.Printf("- %s (%s) [%s]\n", dep.Name, dep.Version, dep.Manager)
 				key := dep.Name + "@" + dep.Version
 				if r.CVEs != nil && len(r.CVEs[key]) > 0 {
-					fmt.Printf("    %-18s  %-10s  %-6s  %s\n", strings.Repeat("-", 18), strings.Repeat("-", 10), strings.Repeat("-", 6), strings.Repeat("-", 50))
-					fmt.Printf("    %-18s  %-10s  %-6s  %s\n", "CVE ID", "Published", "Score", "Title")
-					fmt.Printf("    %-18s  %-10s  %-6s  %s\n", strings.Repeat("-", 18), strings.Repeat("-", 10), strings.Repeat("-", 6), strings.Repeat("-", 50))
-					for _, cve := range r.CVEs[key] {
-						score := ""
-						if cve.Score != nil {
-							score = fmt.Sprintf("%.1f", *cve.Score)
+					header := []string{"CVE ID", "Published", "Score", "Title"}
+					colWidths := []int{18, 10, 6, 50}
+					rightAlign := []bool{false, false, true, false}
+					cves := r.CVEs[key]
+					rows := make([][]string, len(cves))
+					for i, cve := range cves {
+						cveID := cve.CVEID
+						if len(cveID) > 18 {
+							cveID = cveID[:18]
 						}
-						// Extract date only (YYYY-MM-DD) from PublishedDate
 						published := cve.PublishedDate
 						if len(published) >= 10 {
 							published = published[:10]
 						}
-						title := cve.Title
-						if len(title) > 50 {
-							title = title[:47] + "..."
+						score := ""
+						if cve.Score != nil {
+							score = fmt.Sprintf("%.1f", *cve.Score)
 						}
-						fmt.Printf("    %-18s  %-10s  %-6s  %s\n", cve.CVEID, published, score, title)
+						title := cve.Title
+						rows[i] = []string{cveID, published, score, title}
 					}
+					output.PrintTable(header, rows, colWidths, rightAlign)
 				} else {
 					fmt.Println("    No CVE")
 				}
