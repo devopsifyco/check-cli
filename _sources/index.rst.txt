@@ -65,7 +65,7 @@ MCP
 
 .. toctree::
    :maxdepth: 2
-   :caption: MCP
+   :caption: MCP Server
 
    mcp_client
    mcp_server

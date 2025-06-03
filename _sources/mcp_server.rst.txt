@@ -1,4 +1,4 @@
-Check MCP Server SSE
+SSE
 ====================
 
 Check MCP Server SSE provides a Model Context Protocol (MCP) server implementation with Server-Sent Events (SSE) support, enabling real-time streaming of results and updates to clients. This is particularly useful for LLMs and other clients that require live feedback or incremental results from long-running operations.

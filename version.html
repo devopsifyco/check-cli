@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usage &mdash; Check Tool  documentation</title>
+  <title>Version Command &mdash; Check Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
@@ -45,19 +45,21 @@
               <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="deps.html">Deps Command</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#arguments">Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#flags">Flags</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#supported-components-for-local-version-check">Supported Components for Local Version Check</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Version Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-components-for-local-version-check">Supported Components for Local Version Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">MCP</span></p>
+<p class="caption" role="heading"><span class="caption-text">MCP Server</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mcp_client.html">Check MCP Server Stdio</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">Check MCP Server SSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_client.html">Stdio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">SSE</a></li>
 </ul>
 
         </div>
@@ -74,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Usage</li>
+      <li class="breadcrumb-item active">Version Command</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/devopsifyco/check-cli/blob/master/docs/version.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -84,23 +86,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>DevOpsify Check Tool version information for components, supporting both local and remote version lookups.</p>
+  <section id="version-command">
+<h1>Version Command<a class="headerlink" href="#version-command" title="Permalink to this heading"></a></h1>
+<p>DevOpsify Check Tool version information for components, supporting both local and remote version lookups.</p>
 <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>version<span class="w"> </span><span class="o">[</span>component<span class="o">]</span><span class="w"> </span><span class="o">[</span>version<span class="o">]</span><span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
 </pre></div>
 </div>
 </section>
-<section id="arguments">
-<h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this heading"></a></h1>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>component: The component to check (e.g., nginx, istio)</p></li>
 <li><p>version: (Optional) Specific version to check. If omitted, returns the latest version.</p></li>
-</ul>
-</section>
-<section id="flags">
-<h1>Flags<a class="headerlink" href="#flags" title="Permalink to this heading"></a></h1>
-<ul class="simple">
 <li><p>–apikey: API key for authentication with remote version service</p></li>
 <li><p>–full: Show full version information including release dates and support timeline</p></li>
 <li><p>–history: Show version history</p></li>
@@ -110,7 +109,7 @@
 </ul>
 </section>
 <section id="supported-components-for-local-version-check">
-<h1>Supported Components for Local Version Check<a class="headerlink" href="#supported-components-for-local-version-check" title="Permalink to this heading"></a></h1>
+<h2>Supported Components for Local Version Check<a class="headerlink" href="#supported-components-for-local-version-check" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>CLI tool itself</p></li>
 <li><p>Docker</p></li>
@@ -119,7 +118,7 @@
 </ul>
 </section>
 <section id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h1>
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>version<span class="w"> </span>nginx
 check<span class="w"> </span>version<span class="w"> </span>nginx<span class="w"> </span>--full
 check<span class="w"> </span>version<span class="w"> </span>nginx<span class="w"> </span>--history
@@ -188,6 +187,7 @@ CVE-2025-12345      2024-02-01  8.2     Example vulnerability in postgresql
 ------------------  ----------  ------  --------------------------------------------------
 </pre></div>
 </div>
+</section>
 </section>
 
 

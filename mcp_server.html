@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Check MCP Server SSE &mdash; Check Tool  documentation</title>
+  <title>SSE &mdash; Check Tool  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Check MCP Server Stdio" href="mcp_client.html" /> 
+    <link rel="prev" title="Stdio" href="mcp_client.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,19 +44,15 @@
               <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="deps.html">Deps Command</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html#arguments">Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html#flags">Flags</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html#supported-components-for-local-version-check">Supported Components for Local Version Check</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">Version Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="os.html">OS Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="speed.html">Speed Command</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">MCP</span></p>
+<p class="caption" role="heading"><span class="caption-text">MCP Server</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="mcp_client.html">Check MCP Server Stdio</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Check MCP Server SSE</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="mcp_client.html">Stdio</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SSE</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#available-tools">Available Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
@@ -85,7 +81,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Check MCP Server SSE</li>
+      <li class="breadcrumb-item active">SSE</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/devopsifyco/check-cli/blob/master/docs/mcp_server.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -95,8 +91,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="check-mcp-server-sse">
-<h1>Check MCP Server SSE<a class="headerlink" href="#check-mcp-server-sse" title="Permalink to this heading"></a></h1>
+  <section id="sse">
+<h1>SSE<a class="headerlink" href="#sse" title="Permalink to this heading"></a></h1>
 <p>Check MCP Server SSE provides a Model Context Protocol (MCP) server implementation with Server-Sent Events (SSE) support, enabling real-time streaming of results and updates to clients. This is particularly useful for LLMs and other clients that require live feedback or incremental results from long-running operations.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
@@ -161,7 +157,7 @@
 <li><p>Real-time streaming of results using SSE</p></li>
 <li><p>Compatible with LLMs and automation tools that support event streams</p></li>
 <li><p>Secure, configurable, and extensible</p></li>
-<li><p>Shares the same toolset as the standard Check MCP Server (see <a class="reference internal" href="mcp_client.html"><span class="doc">Check MCP Server Stdio</span></a>)</p></li>
+<li><p>Shares the same toolset as the standard Check MCP Server (see <a class="reference internal" href="mcp_client.html"><span class="doc">Stdio</span></a>)</p></li>
 </ul>
 </section>
 <section id="usage">
@@ -270,7 +266,7 @@
 <section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="mcp_client.html"><span class="doc">Check MCP Server Stdio</span></a> for available tools and usage examples</p></li>
+<li><p><a class="reference internal" href="mcp_client.html"><span class="doc">Stdio</span></a> for available tools and usage examples</p></li>
 <li><p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events">Server-Sent Events (MDN)</a></p></li>
 </ul>
 </section>
@@ -284,7 +280,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="mcp_client.html" class="btn btn-neutral float-left" title="Check MCP Server Stdio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcp_client.html" class="btn btn-neutral float-left" title="Stdio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
