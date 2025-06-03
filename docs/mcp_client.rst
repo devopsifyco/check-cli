@@ -1,4 +1,4 @@
-Check MCP Server
+Check MCP Server Stdio
 ================
 
 A Model Context Protocol server that provides CVE checking capabilities via the Opsify API. This server enables LLMs to search for and retrieve CVE (Common Vulnerabilities and Exposures) information using a flexible set of filters.

@@ -68,6 +68,7 @@ MCP
    :caption: MCP
 
    mcp_client
+   mcp_server
 
 global_flags
 exit_codes
