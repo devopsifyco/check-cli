@@ -1,3 +1,6 @@
+Version Command
+============
+
 DevOpsify Check Tool version information for components, supporting both local and remote version lookups.
 
 Usage
@@ -6,13 +9,10 @@ Usage
 
    check version [component] [version] [flags]
 
-Arguments
----------
+Options
+-------
 - component: The component to check (e.g., nginx, istio)
 - version: (Optional) Specific version to check. If omitted, returns the latest version.
-
-Flags
------
 - --apikey: API key for authentication with remote version service
 - --full: Show full version information including release dates and support timeline
 - --history: Show version history
