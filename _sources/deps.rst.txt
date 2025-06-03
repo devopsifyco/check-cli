@@ -1,4 +1,4 @@
-Deps
+Check Dependencies
 ============
 
 Analyzes project dependencies from various package manager files.
