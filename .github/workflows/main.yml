@@ -2,12 +2,12 @@ name: Build & Release
 
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
+    #paths-ignore:
+    #  - 'docs/**'
     branches: [ refactor ]
   pull_request:
-    paths-ignore:
-      - 'docs/**'
+    #paths-ignore:
+    #  - 'docs/**'
     branches: [ refactor ]
   workflow_dispatch:
     inputs:
