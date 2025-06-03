@@ -15,12 +15,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "DevOpsify"
             VALUE "FileDescription", "DevOpsify Check Tool for system checks"
-            VALUE "FileVersion", "1.0.0"
+            VALUE "FileVersion", "0.0.13"
             VALUE "InternalName", "check.exe"
             VALUE "LegalCopyright", "Copyright© 2025 DevOpsify"
             VALUE "OriginalFilename", "check.exe"
             VALUE "ProductName", "DevOpsify Check Tool"
-            VALUE "ProductVersion", "1.0.0"
+            VALUE "ProductVersion", "0.0.13"
         END
     END
     BLOCK "VarFileInfo"
