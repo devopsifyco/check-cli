@@ -1,6 +1,6 @@
 # DevOpsify Check Tool
 
-DevOpsify Check Tool is a fast, cross-platform command-line utility for developers, DevOps engineers, and IT professionals to quickly analyze dependencies, check software versions (with CVE info), validate SSL certificates, inspect OS details, and test network speed. It supports Windows, Linux, and macOS, and outputs results in JSON or YAML for easy integration into CI/CD, security audits, and troubleshooting workflows.
+DevOpsify Check Tool is a fast, cross-platform command-line utility for developers, DevOps engineers, and IT professionals to quickly analyze dependencies, check software versions (with CVE info), validate SSL certificates, inspect OS details, test network speed, and count lines of code. It supports Windows, Linux, and macOS, and outputs results in JSON or YAML for easy integration into CI/CD, security audits, and troubleshooting workflows.
 
 ## ✨Features
 
@@ -9,6 +9,7 @@ DevOpsify Check Tool is a fast, cross-platform command-line utility for develope
 - 🔒 Validate SSL certificates for domains
 - 🖥️ Display detailed operating system and environment information
 - 🚀 Perform network speed tests
+- 📊 Count lines of code in a directory or file (LOC)
 - 📝 Output results in JSON and YAML formats for automation and reporting
 - 📜 Version history tracking
 - 🗂️ Support for multiple dependency file formats
@@ -28,7 +29,17 @@ For full documentation, visit the [official DevOpsify Check Tool documentation](
 ./check version postgresql 16.4 --cve
 
 # Check dependencies in a project and include CVE information
-./check deps --cve -o json
+./check code deps --cve -o json
+
+# Check dependencies for a specific file
+./check code deps pom.xml -o json
+
+# Count lines of code in the current directory
+./check code loc
+
+# Count lines of code in a specific directory or file
+./check code loc ./checks/dependencies/samples
+./check code loc ./checks/dependencies/samples -o json
 
 # Validate SSL certificate for a domain
 ./check ssl example.com
@@ -46,24 +57,24 @@ Download the latest release for your platform from the [releases page](https://g
 
 ### Manual Download
 
-- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe)
-- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64)
-- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-arm64)
-- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-macos-intel)
-- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-macos-arm64)
+- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check.exe)
+- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-amd64)
+- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-arm64)
+- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-macos-intel)
+- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-macos-arm64)
 
 ### Download via Command Line
 
 **Linux/macOS:**
 ```sh
-curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64
+curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-amd64
 chmod +x check-linux-amd64
 ./check-linux-amd64 --help
 ```
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe" -OutFile "check.exe"
+Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check.exe" -OutFile "check.exe"
 .\check.exe --help
 ```
 
