@@ -34,13 +34,13 @@ Command Line Download:
 
 .. code-block:: bash
 
-   curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64
+   curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-amd64
    chmod +x check-linux-amd64
    ./check-linux-amd64 --help
 
 .. code-block:: powershell
 
-   Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe" -OutFile "check.exe"
+   Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check.exe" -OutFile "check.exe"
    .\check.exe --help
 
 Building from Source

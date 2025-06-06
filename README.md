@@ -57,24 +57,24 @@ Download the latest release for your platform from the [releases page](https://g
 
 ### Manual Download
 
-- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe)
-- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64)
-- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-arm64)
-- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-macos-intel)
-- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-macos-arm64)
+- [Windows (check.exe)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check.exe)
+- [Linux AMD64 (check-linux-amd64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-amd64)
+- [Linux ARM64 (check-linux-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-arm64)
+- [macOS Intel (check-macos-intel)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-macos-intel)
+- [macOS ARM64 (check-macos-arm64)](https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-macos-arm64)
 
 ### Download via Command Line
 
 **Linux/macOS:**
 ```sh
-curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check-linux-amd64
+curl -LO https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check-linux-amd64
 chmod +x check-linux-amd64
 ./check-linux-amd64 --help
 ```
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.13/check.exe" -OutFile "check.exe"
+Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.14/check.exe" -OutFile "check.exe"
 .\check.exe --help
 ```
 
