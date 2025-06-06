@@ -54,7 +54,7 @@ CLI
    :maxdepth: 2
    :caption: CLI Commands
 
-   deps
+   code
    version
    ssl
    os

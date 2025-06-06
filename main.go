@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/devopsifyco/check-cli/checks"
+	"github.com/devopsifyco/check-cli/checks/code"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,6 @@ func main() {
 		"os":        checks.NewOSCheckCommand(),
 		"speed":     checks.NewSpeedCheckCommand(),
 		"ssl":       checks.NewSSLCheckCommand(),
-		"deps":      checks.NewDepsCheckCommand(outputFormat, false),
 	}
 
 	// Add commands to root
@@ -73,13 +73,6 @@ func main() {
 					registry[cmdName] = cmd
 				}
 
-				// For deps command, create a new instance with the current flags
-				if cmdName == "deps" {
-					cve, _ := cobraCmd.Flags().GetBool("cve")
-					cmd = checks.NewDepsCheckCommand(outputFormat, cve)
-					registry[cmdName] = cmd
-				}
-
 				// Execute the check command
 				result, err := cmd.Execute(args)
 				if err != nil {
@@ -101,14 +94,65 @@ func main() {
 			cobraCmd.Flags().Bool("cve", false, "Include CVEs in the response")
 		}
 
-		// Add deps-specific flags
-		if name == "deps" {
-			cobraCmd.Flags().Bool("cve", false, "Include CVEs in the response")
-		}
-
 		// Add the command to root
 		rootCmd.AddCommand(cobraCmd)
 	}
+
+	// --- Add 'code' command with subcommands ---
+	codeCmd := &cobra.Command{
+		Use:   "code",
+		Short: "Code analysis commands (deps, loc)",
+		Long:  "Code analysis commands: dependencies and lines of code.",
+	}
+
+	// 'code deps' subcommand
+	codeDepsCmd := &cobra.Command{
+		Use:   "deps [path]",
+		Short: "Check project dependencies",
+		Run: func(cmd *cobra.Command, args []string) {
+			cve, _ := cmd.Flags().GetBool("cve")
+			output, _ := cmd.Flags().GetString("output")
+			if output != "" {
+				outputFormat = output
+			}
+			cmdObj := code.NewCodeDepsCheckCommand(outputFormat, cve)
+			result, err := cmdObj.Execute(args)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			result.Print(outputFormat)
+		},
+	}
+	codeDepsCmd.Flags().Bool("cve", false, "Include CVEs in the response")
+	codeDepsCmd.Flags().StringP("output", "o", "", "Output format (json, yaml)")
+
+	// 'code loc' subcommand
+	codeLocCmd := &cobra.Command{
+		Use:   "loc [path]",
+		Short: "Count lines of code",
+		Run: func(cmd *cobra.Command, args []string) {
+			output, _ := cmd.Flags().GetString("output")
+			if output != "" {
+				outputFormat = output
+			}
+			cmdObj := code.NewLocCheckCommand(outputFormat)
+			result, err := cmdObj.Execute(args)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			result.Print(outputFormat)
+		},
+	}
+	codeLocCmd.Flags().StringP("output", "o", "", "Output format (json, yaml)")
+
+	// Add subcommands to 'code'
+	codeCmd.AddCommand(codeDepsCmd)
+	codeCmd.AddCommand(codeLocCmd)
+
+	// Add 'code' to root
+	rootCmd.AddCommand(codeCmd)
 
 	// Execute root command
 	if err := rootCmd.Execute(); err != nil {
