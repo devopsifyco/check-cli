@@ -3,11 +3,14 @@ Check Dependencies
 
 Analyzes project dependencies from various package manager files.
 
+.. note::
+   The dependencies check command is now available as a subcommand: ``check code deps``
+
 Usage
 -----
 .. code-block:: bash
 
-   check deps [path] [-o format] [--cve]
+   check code deps [path] [-o format] [--cve]
 
 Options
 -------

@@ -18,9 +18,7 @@
       <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Check Version" href="version.html" />
-    <link rel="prev" title="DevOpsify Check Tool" href="index.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,14 +41,8 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">CLI Commands</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Check Dependencies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-package-managers">Supported Package Managers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code Command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="version.html">Check Version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ssl.html">Check SSL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="os.html">Check OS</a></li>
@@ -89,9 +81,13 @@
   <section id="check-dependencies">
 <h1>Check Dependencies<a class="headerlink" href="#check-dependencies" title="Permalink to this heading"></a></h1>
 <p>Analyzes project dependencies from various package manager files.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The dependencies check command is now available as a subcommand: <code class="docutils literal notranslate"><span class="pre">check</span> <span class="pre">code</span> <span class="pre">deps</span></code></p>
+</div>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>deps<span class="w"> </span><span class="o">[</span>path<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>format<span class="o">]</span><span class="w"> </span><span class="o">[</span>--cve<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check<span class="w"> </span>code<span class="w"> </span>deps<span class="w"> </span><span class="o">[</span>path<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>format<span class="o">]</span><span class="w"> </span><span class="o">[</span>--cve<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -159,10 +155,7 @@ check<span class="w"> </span>deps<span class="w"> </span>./checks/dependencies/s
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="DevOpsify Check Tool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="version.html" class="btn btn-neutral float-right" title="Check Version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
