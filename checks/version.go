@@ -305,7 +305,7 @@ func (s *VersionService) GetSpecificVersion(component string, version string) (*
 
 // GetVersions retrieves version history for a component
 func (s *VersionService) GetVersions(component string) (VersionHistoryList, error) {
-	url := fmt.Sprintf("%s/release/%s?apikey=%s", s.client.BaseURL, component, s.client.APIKey)
+	url := fmt.Sprintf("%s/release/%s/all?apikey=%s", s.client.BaseURL, component, s.client.APIKey)
 	result, err := makeRequest[[]VersionHistory](s.client.HTTPClient, url)
 	if err != nil {
 		return nil, err
