@@ -1,14 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"os/user"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -23,6 +27,53 @@ var (
 	outputFormat string
 	apiKey     string
 )
+
+// Path to store the backend token
+func getAuthConfigPath() string {
+	homeDir := ""
+	if u, err := user.Current(); err == nil {
+		homeDir = u.HomeDir
+	} else {
+		homeDir, _ = os.UserHomeDir()
+	}
+	dosDir := filepath.Join(homeDir, ".dos")
+	if _, err := os.Stat(dosDir); os.IsNotExist(err) {
+		_ = os.MkdirAll(dosDir, 0700)
+	}
+	return filepath.Join(dosDir, "checkcli.json")
+}
+
+type BackendTokenData struct {
+	AccessToken string `json:"access_token"`
+	Email       string `json:"email,omitempty"`
+	FullName    string `json:"full_name,omitempty"`
+	UserID      int    `json:"id,omitempty"`
+	GoogleID    string `json:"google_id,omitempty"`
+}
+
+func saveBackendToken(data *BackendTokenData) error {
+	filePath := getAuthConfigPath()
+	f, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	return json.NewEncoder(f).Encode(data)
+}
+
+func loadBackendToken() (*BackendTokenData, error) {
+	filePath := getAuthConfigPath()
+	f, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	var data BackendTokenData
+	if err := json.NewDecoder(f).Decode(&data); err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
 
 func main() {
 	// Create root command
@@ -209,18 +260,73 @@ func main() {
 					log.Println("Token exchange error:", err)
 					return
 				}
-				client := oauthCfg.Client(context.Background(), token)
-				resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
+
+				// Exchange Google token for backend token
+				apiEndpoint := "https://api.opsify.dev/checks" // or configurable
+				loginUrl := apiEndpoint + "/user/google/login"
+				payload := map[string]string{"token": token.AccessToken}
+				jsonPayload, _ := json.Marshal(payload)
+
+				// Get API key from flag or env
+				apiKey := os.Getenv("CHECK_API_KEY")
+				if apiKey == "" {
+					apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa"
+				}
+				if apiKey == "" {
+					apiKey = cmd.Flag("apikey").Value.String()
+				}
+
+				req, err := http.NewRequest("POST", loginUrl, bytes.NewReader(jsonPayload))
 				if err != nil {
-					fmt.Fprintln(w, "Failed to get user info:", err)
-					log.Println("User info error:", err)
+					fmt.Fprintln(w, "Failed to create backend request:", err)
+					log.Println("Backend request error:", err)
+					return
+				}
+				req.Header.Set("Content-Type", "application/json")
+				if apiKey != "" {
+					req.Header.Set("apikey", apiKey)
+				}
+				resp, err := http.DefaultClient.Do(req)
+				if err != nil {
+					fmt.Fprintln(w, "Failed to authenticate with backend:", err)
+					log.Println("Backend auth error:", err)
 					return
 				}
 				defer resp.Body.Close()
-				buf := make([]byte, 4096)
-				n, _ := resp.Body.Read(buf)
+				if resp.StatusCode != 200 {
+					fmt.Fprintln(w, "Backend login failed with status:", resp.Status)
+					log.Println("Backend login failed with status:", resp.Status)
+					return
+				}
+				var backendResp struct {
+					AccessToken string `json:"access_token"`
+					TokenType   string `json:"token_type"`
+					User struct {
+						Email     string `json:"email"`
+						FullName  string `json:"full_name"`
+						ID        int    `json:"id"`
+						GoogleID  string `json:"google_id"`
+					} `json:"user"`
+				}
+				if err := json.NewDecoder(resp.Body).Decode(&backendResp); err != nil {
+					fmt.Fprintln(w, "Failed to parse backend response:", err)
+					log.Println("Backend response parse error:", err)
+					return
+				}
+				data := BackendTokenData{
+					AccessToken: backendResp.AccessToken,
+					Email:       backendResp.User.Email,
+					FullName:    backendResp.User.FullName,
+					UserID:      backendResp.User.ID,
+					GoogleID:    backendResp.User.GoogleID,
+				}
+				if err := saveBackendToken(&data); err != nil {
+					fmt.Fprintln(w, "Failed to save token:", err)
+					log.Println("Token save error:", err)
+					return
+				}
 				fmt.Fprintf(w, "Login successful! You can close this window.\n")
-				fmt.Printf("User info: %s\n", string(buf[:n]))
+				fmt.Printf("User info: %s\n", toJsonString(data))
 				go func() { time.Sleep(1 * time.Second); server.Shutdown(context.Background()) }()
 			})
 
@@ -238,7 +344,13 @@ func main() {
 		Use:   "logout",
 		Short: "Logout from Google account",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("[Placeholder] Google logout will be implemented later.")
+			filePath := getAuthConfigPath()
+			err := os.Remove(filePath)
+			if err != nil && !os.IsNotExist(err) {
+				fmt.Printf("Failed to remove token file: %v\n", err)
+				return
+			}
+			fmt.Println("Logged out successfully. Token file removed.")
 		},
 	}
 
@@ -271,4 +383,10 @@ func openBrowser(url string) {
 	default:
 		fmt.Printf("Please open the following URL in your browser:\n%s\n", url)
 	}
+}
+
+// Helper to pretty-print user info
+func toJsonString(v interface{}) string {
+	b, _ := json.MarshalIndent(v, "", "  ")
+	return string(b)
 } 

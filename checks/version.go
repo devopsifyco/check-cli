@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"runtime"
@@ -13,6 +12,8 @@ import (
 	"time"
 	"gopkg.in/yaml.v3"
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
+	"os/user"
+	"path/filepath"
 )
 
 const (
@@ -330,62 +331,67 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// makeRequest is a generic function to make HTTP requests and parse responses
+// Path to store the OAuth token (should match main.go)
+func getAuthConfigPath() string {
+	homeDir := ""
+	if u, err := user.Current(); err == nil {
+		homeDir = u.HomeDir
+	} else {
+		homeDir, _ = os.UserHomeDir()
+	}
+	dosDir := filepath.Join(homeDir, ".dos")
+	if _, err := os.Stat(dosDir); os.IsNotExist(err) {
+		_ = os.MkdirAll(dosDir, 0700)
+	}
+	return filepath.Join(dosDir, "checkcli.json")
+}
+
+type BackendTokenData struct {
+	AccessToken string `json:"access_token"`
+}
+
+func loadBackendToken() (*BackendTokenData, error) {
+	filePath := getAuthConfigPath()
+	f, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	var data BackendTokenData
+	if err := json.NewDecoder(f).Decode(&data); err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func addAuthHeaderIfToken(req *http.Request) {
+	token, err := loadBackendToken()
+	if err == nil && token != nil && token.AccessToken != "" {
+		req.Header.Set("Authorization", "Bearer "+token.AccessToken)
+	}
+}
+
+// Patch makeRequest to add Bearer token if present
 func makeRequest[T any](client *http.Client, url string) (*T, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
+		return nil, err
 	}
-
+	addAuthHeaderIfToken(req)
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error making request: %w", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading response: %w", err)
-	}
-
-	// Check for non-200 status codes
 	if resp.StatusCode != http.StatusOK {
 		var errResp ErrorResponse
-		if err := json.Unmarshal(body, &errResp); err == nil && (errResp.Error != "" || errResp.Message != "") {
-			// If we can parse the error response and it has content
-			return nil, fmt.Errorf("API error (status %d): %s - %s", 
-				resp.StatusCode, 
-				errResp.Error, 
-				errResp.Message)
-		}
-		// If we can't parse the error response or it's empty, include the raw body in the error
-		return nil, fmt.Errorf("API request failed with status %d: %s", resp.StatusCode, string(body))
+		_ = json.NewDecoder(resp.Body).Decode(&errResp)
+		return nil, fmt.Errorf("API request failed with status %d: %s", resp.StatusCode, errResp.Message)
 	}
-
-	// Check for empty response
-	if len(body) == 0 {
-		return nil, fmt.Errorf("empty response received from API")
-	}
-
-	// Try to parse the response
 	var result T
-	if err := json.Unmarshal(body, &result); err != nil {
-		// If parsing fails, try to determine if it's a known error format
-		var errResp ErrorResponse
-		if jsonErr := json.Unmarshal(body, &errResp); jsonErr == nil && (errResp.Error != "" || errResp.Message != "") {
-			return nil, fmt.Errorf("API error: %s - %s", 
-				errResp.Error, 
-				errResp.Message)
-		}
-		// If it's not a known error format, include both the parsing error and the raw response
-		return nil, fmt.Errorf("error parsing response: %w (raw response: %s)", err, string(body))
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
 	}
-
-	// For pointer types, check if the result is empty/nil
-	if ptr, ok := any(&result).(interface{ IsZero() bool }); ok && ptr.IsZero() {
-		return nil, fmt.Errorf("API returned empty result")
-	}
-
 	return &result, nil
 }
 
