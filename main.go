@@ -1,12 +1,22 @@
 package main
 
 import (
+	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
+	"time"
 
 	"github.com/devopsifyco/check-cli/checks"
 	"github.com/devopsifyco/check-cli/checks/code"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 var (
@@ -165,7 +175,62 @@ func main() {
 		Use:   "login",
 		Short: "Login to Google account",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("[Placeholder] Google login will be implemented later.")
+			clientID := os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
+			clientSecret := os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+			if clientID == "" || clientSecret == "" {
+				fmt.Println("GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET environment variables must be set.")
+				return
+			}
+			// Use a fixed redirect URL for local server
+			redirectURL := "http://localhost:8085/auth/google/callback"
+			oauthCfg := &oauth2.Config{
+				ClientID:     clientID,
+				ClientSecret: clientSecret,
+				RedirectURL:  redirectURL,
+				Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+				Endpoint:     google.Endpoint,
+			}
+
+			state := generateStateOauthCookie()
+			url := oauthCfg.AuthCodeURL(state, oauth2.AccessTypeOffline)
+
+			// Start local server to handle callback
+			server := &http.Server{Addr: ":8085"}
+			http.HandleFunc("/auth/google/callback", func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Query().Get("state") != state {
+					fmt.Fprintln(w, "State mismatch. Try again.")
+					log.Println("State mismatch.")
+					return
+				}
+				code := r.URL.Query().Get("code")
+				token, err := oauthCfg.Exchange(context.Background(), code)
+				if err != nil {
+					fmt.Fprintln(w, "Failed to exchange token:", err)
+					log.Println("Token exchange error:", err)
+					return
+				}
+				client := oauthCfg.Client(context.Background(), token)
+				resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
+				if err != nil {
+					fmt.Fprintln(w, "Failed to get user info:", err)
+					log.Println("User info error:", err)
+					return
+				}
+				defer resp.Body.Close()
+				buf := make([]byte, 4096)
+				n, _ := resp.Body.Read(buf)
+				fmt.Fprintf(w, "Login successful! You can close this window.\n")
+				fmt.Printf("User info: %s\n", string(buf[:n]))
+				go func() { time.Sleep(1 * time.Second); server.Shutdown(context.Background()) }()
+			})
+
+			// Open browser
+			fmt.Println("Opening browser for Google login...")
+			openBrowser(url)
+			fmt.Println("Waiting for Google login...")
+			if err := server.ListenAndServe(); err != http.ErrServerClosed {
+				log.Println("Server error:", err)
+			}
 		},
 	}
 
@@ -185,5 +250,25 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
+	}
+}
+
+// Helper functions for OAuth2
+func generateStateOauthCookie() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	return base64.URLEncoding.EncodeToString(b)
+}
+
+func openBrowser(url string) {
+	switch runtime.GOOS {
+	case "linux":
+		exec.Command("xdg-open", url).Start()
+	case "windows":
+		exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		exec.Command("open", url).Start()
+	default:
+		fmt.Printf("Please open the following URL in your browser:\n%s\n", url)
 	}
 } 

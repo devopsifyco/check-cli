@@ -276,11 +276,9 @@ func (s *VersionService) GetVersion(component string) (*VersionResponseFull, err
 	if err != nil {
 		return nil, err
 	}
-	// Check if result is empty (no version found)
 	if result.Version == "" {
 		return nil, fmt.Errorf("version not found for component: %s", component)
 	}
-	// Ensure component name is set
 	if result.Name == "" {
 		result.Name = component
 	}
@@ -294,11 +292,9 @@ func (s *VersionService) GetSpecificVersion(component string, version string) (*
 	if err != nil {
 		return nil, err
 	}
-	// Check if result is empty (no version found)
 	if result.Version == "" {
 		return nil, fmt.Errorf("version %s not found for component: %s", version, component)
 	}
-	// Ensure component name is set
 	if result.Name == "" {
 		result.Name = component
 	}
@@ -312,7 +308,6 @@ func (s *VersionService) GetVersions(component string) (VersionHistoryList, erro
 	if err != nil {
 		return nil, err
 	}
-	// Check if result is empty (no versions found)
 	if result == nil || len(*result) == 0 {
 		return nil, fmt.Errorf("no versions found for component: %s", component)
 	}
@@ -321,17 +316,7 @@ func (s *VersionService) GetVersions(component string) (VersionHistoryList, erro
 
 // GetCVEs retrieves CVE information for a specific version of a component
 func (s *VersionService) GetCVEs(component string, version string, limit *int) ([]CVEResponse, error) {
-	url := fmt.Sprintf("%s/release/%s/%s/cves", s.client.BaseURL, component, version)
-	
-	// Set default limit to 100 if not provided or if 0
-	//limitValue := 100
-	//if limit != nil && *limit > 0 {
-	//	limitValue = *limit
-	//}
-	//url = fmt.Sprintf("%s&limit=%d", url, limitValue)
-	
-	url = fmt.Sprintf("%s?apikey=%s", url, s.client.APIKey)	
-
+	url := fmt.Sprintf("%s/release/%s/%s/cves?apikey=%s", s.client.BaseURL, component, version, s.client.APIKey)
 	result, err := makeRequest[[]CVEResponse](s.client.HTTPClient, url)
 	if err != nil {
 		return nil, err
