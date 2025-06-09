@@ -14,6 +14,7 @@ import (
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
 	"os/user"
 	"path/filepath"
+	auth "github.com/devopsifyco/check-cli/checks/auth"
 )
 
 const (
@@ -346,26 +347,8 @@ func getAuthConfigPath() string {
 	return filepath.Join(dosDir, "checkcli.json")
 }
 
-type BackendTokenData struct {
-	AccessToken string `json:"access_token"`
-}
-
-func loadBackendToken() (*BackendTokenData, error) {
-	filePath := getAuthConfigPath()
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	var data BackendTokenData
-	if err := json.NewDecoder(f).Decode(&data); err != nil {
-		return nil, err
-	}
-	return &data, nil
-}
-
 func addAuthHeaderIfToken(req *http.Request) {
-	token, err := loadBackendToken()
+	token, err := auth.LoadBackendToken()
 	if err == nil && token != nil && token.AccessToken != "" {
 		req.Header.Set("Authorization", "Bearer "+token.AccessToken)
 	}
