@@ -150,7 +150,7 @@ func (c *AuthLoginCommand) Execute() error {
 			return
 		}
 		fmt.Fprintf(w, "Login successful! You can close this window.\n")
-		fmt.Printf("User info: %+v\n", data)
+		fmt.Printf("Login successful!")
 		go func() { time.Sleep(1 * time.Second); server.Shutdown(context.Background()) }()
 	})
 	fmt.Println("Opening browser for Google login...")
