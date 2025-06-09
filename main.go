@@ -154,6 +154,33 @@ func main() {
 	// Add 'code' to root
 	rootCmd.AddCommand(codeCmd)
 
+	// --- Add 'auth' command with subcommands ---
+	authCmd := &cobra.Command{
+		Use:   "auth",
+		Short: "Authentication commands (login, logout)",
+		Long:  "Authentication commands for logging in and out of Google accounts.",
+	}
+
+	authLoginCmd := &cobra.Command{
+		Use:   "login",
+		Short: "Login to Google account",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("[Placeholder] Google login will be implemented later.")
+		},
+	}
+
+	authLogoutCmd := &cobra.Command{
+		Use:   "logout",
+		Short: "Logout from Google account",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("[Placeholder] Google logout will be implemented later.")
+		},
+	}
+
+	authCmd.AddCommand(authLoginCmd)
+	authCmd.AddCommand(authLogoutCmd)
+	rootCmd.AddCommand(authCmd)
+
 	// Execute root command
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Printf("Error: %v\n", err)
