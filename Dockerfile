@@ -30,10 +30,6 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy source code and resource files
 COPY . .
 
-# Copy build script
-COPY build/build.sh /build.sh
-RUN chmod +x /build.sh
-
 # Create dist directory
 RUN mkdir -p /dist
 
@@ -41,12 +37,39 @@ RUN mkdir -p /dist
 RUN go mod vendor
 ENV GOFLAGS="-mod=vendor"
 
-# Use build_with_retry from build.sh
-RUN . /build.sh && build_with_retry windows amd64 /dist/check.exe
-RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
-RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
-RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
-RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
+# Build for different platforms
+RUN for os in windows linux darwin; do \
+    for arch in amd64 arm64; do \
+        if [ "$os" = "windows" ] && [ "$arch" = "arm64" ]; then continue; fi; \
+        if [ "$os" = "darwin" ] && [ "$arch" = "arm64" ]; then \
+            output="/dist/check-macos-arm64"; \
+        elif [ "$os" = "darwin" ] && [ "$arch" = "amd64" ]; then \
+            output="/dist/check-macos-intel"; \
+        elif [ "$os" = "windows" ]; then \
+            output="/dist/check.exe"; \
+        else \
+            output="/dist/check-$os-$arch"; \
+        fi; \
+        echo "Building for $os/$arch..."; \
+        if [ "$os" = "windows" ]; then \
+            x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff; \
+        fi; \
+        if GOOS=$os GOARCH=$arch go build -v -x -o $output; then \
+            if [ "$os" = "windows" ]; then rm -f resource.syso; fi; \
+            echo "Successfully built $output"; \
+        else \
+            echo "First attempt failed for $os/$arch, retrying..."; \
+            sleep 3; \
+            if GOOS=$os GOARCH=$arch go build -v -x -o $output; then \
+                if [ "$os" = "windows" ]; then rm -f resource.syso; fi; \
+                echo "Successfully built $output on second attempt"; \
+            else \
+                echo "Failed to build $output after two attempts"; \
+                exit 1; \
+            fi; \
+        fi; \
+    done; \
+done
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest

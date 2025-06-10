@@ -386,28 +386,7 @@ func copyFile(src, dst string) error {
 
 // downloadSpeedtestUnix downloads and installs Speedtest CLI for Unix-like systems
 func downloadSpeedtestUnix() error {
-	// First try to install without sudo
-	var cmd *exec.Cmd
-	var err error
-
-	// Try to install speedtest-cli based on the package manager
-	switch {
-	case CommandExists("apt-get"):
-		cmd = exec.Command("sudo", "apt-get", "install", "-y", "speedtest-cli")
-	case CommandExists("yum"):
-		cmd = exec.Command("sudo", "yum", "install", "-y", "speedtest-cli")
-	case CommandExists("brew"):
-		cmd = exec.Command("brew", "install", "speedtest-cli")
-	default:
-		return fmt.Errorf("no supported package manager found")
-	}
-
-	if err = cmd.Run(); err == nil {
-		return nil
-	}
-
-	// If package manager installation failed, download the official binary
-	fmt.Println("Package manager installation failed. Downloading official Speedtest CLI...")
+	fmt.Println("Downloading official Speedtest CLI...")
 	// Create a temporary directory for the speedtest binary
 	tempDir, err := os.MkdirTemp("", "speedtest")
 	if err != nil {
@@ -455,22 +434,25 @@ func downloadSpeedtestUnix() error {
 	out.Close()
 
 	// Extract the tar.gz file
-	cmd = exec.Command("tar", "-xzf", tarPath, "-C", tempDir)
+	cmd := exec.Command("tar", "-xzf", tarPath, "-C", tempDir)
 	if err = cmd.Run(); err != nil {
 		return fmt.Errorf("failed to extract tar file: %v", err)
 	}
 
-	// Find the extracted binary
+	// Recursively search for the speedtest binary in tempDir
 	var binaryPath string
-	files, err := os.ReadDir(tempDir)
-	if err != nil {
-		return fmt.Errorf("failed to read temporary directory: %v", err)
-	}
-	for _, file := range files {
-		if strings.Contains(strings.ToLower(file.Name()), "speedtest") {
-			binaryPath = filepath.Join(tempDir, file.Name())
-			break
+	err = filepath.Walk(tempDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
+		if !info.IsDir() && info.Mode().Perm()&0111 != 0 && strings.ToLower(info.Name()) == "speedtest" {
+			binaryPath = path
+			return io.EOF // stop walking
+		}
+		return nil
+	})
+	if err != nil && err != io.EOF {
+		return fmt.Errorf("error searching for speedtest binary: %v", err)
 	}
 
 	if binaryPath == "" {
