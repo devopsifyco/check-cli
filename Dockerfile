@@ -37,39 +37,27 @@ RUN mkdir -p /dist
 RUN go mod vendor
 ENV GOFLAGS="-mod=vendor"
 
-# Build for different platforms
-RUN for os in windows linux darwin; do \
-    for arch in amd64 arm64; do \
-        if [ "$os" = "windows" ] && [ "$arch" = "arm64" ]; then continue; fi; \
-        if [ "$os" = "darwin" ] && [ "$arch" = "arm64" ]; then \
-            output="/dist/check-macos-arm64"; \
-        elif [ "$os" = "darwin" ] && [ "$arch" = "amd64" ]; then \
-            output="/dist/check-macos-intel"; \
-        elif [ "$os" = "windows" ]; then \
-            output="/dist/check.exe"; \
-        else \
-            output="/dist/check-$os-$arch"; \
-        fi; \
-        echo "Building for $os/$arch..."; \
-        if [ "$os" = "windows" ]; then \
-            x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff; \
-        fi; \
-        if GOOS=$os GOARCH=$arch go build -v -x -o $output; then \
-            if [ "$os" = "windows" ]; then rm -f resource.syso; fi; \
-            echo "Successfully built $output"; \
-        else \
-            echo "First attempt failed for $os/$arch, retrying..."; \
-            sleep 3; \
-            if GOOS=$os GOARCH=$arch go build -v -x -o $output; then \
-                if [ "$os" = "windows" ]; then rm -f resource.syso; fi; \
-                echo "Successfully built $output on second attempt"; \
-            else \
-                echo "Failed to build $output after two attempts"; \
-                exit 1; \
-            fi; \
-        fi; \
-    done; \
-done
+# Build for Windows AMD64
+RUN echo "Building for Windows AMD64..." && \
+    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff && \
+    GOOS=windows GOARCH=amd64 go build -v -x -o /dist/check.exe && \
+    rm -f resource.syso
+
+# Build for Linux AMD64
+RUN echo "Building for Linux AMD64..." && \
+    GOOS=linux GOARCH=amd64 go build -v -x -o /dist/check-linux-amd64
+
+# Build for Linux ARM64
+RUN echo "Building for Linux ARM64..." && \
+    GOOS=linux GOARCH=arm64 go build -v -x -o /dist/check-linux-arm64
+
+# Build for macOS Intel
+RUN echo "Building for macOS Intel..." && \
+    GOOS=darwin GOARCH=amd64 go build -v -x -o /dist/check-macos-intel
+
+# Build for macOS ARM64
+RUN echo "Building for macOS ARM64..." && \
+    GOOS=darwin GOARCH=arm64 go build -v -x -o /dist/check-macos-arm64
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
