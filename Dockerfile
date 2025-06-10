@@ -30,10 +30,6 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy source code and resource files
 COPY . .
 
-# Copy build script
-COPY build/build.sh /build.sh
-RUN chmod +x /build.sh
-
 # Create dist directory
 RUN mkdir -p /dist
 
@@ -41,12 +37,27 @@ RUN mkdir -p /dist
 RUN go mod vendor
 ENV GOFLAGS="-mod=vendor"
 
-# Use build_with_retry from build.sh
-RUN . /build.sh && build_with_retry windows amd64 /dist/check.exe
-RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
-RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
-RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
-RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
+# Build for Windows AMD64
+RUN echo "Building for Windows AMD64..." && \
+    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff && \
+    GOOS=windows GOARCH=amd64 go build -v -x -o /dist/check.exe && \
+    rm -f resource.syso
+
+# Build for Linux AMD64
+RUN echo "Building for Linux AMD64..." && \
+    GOOS=linux GOARCH=amd64 go build -v -x -o /dist/check-linux-amd64
+
+# Build for Linux ARM64
+RUN echo "Building for Linux ARM64..." && \
+    GOOS=linux GOARCH=arm64 go build -v -x -o /dist/check-linux-arm64
+
+# Build for macOS Intel
+RUN echo "Building for macOS Intel..." && \
+    GOOS=darwin GOARCH=amd64 go build -v -x -o /dist/check-macos-intel
+
+# Build for macOS ARM64
+RUN echo "Building for macOS ARM64..." && \
+    GOOS=darwin GOARCH=arm64 go build -v -x -o /dist/check-macos-arm64
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
