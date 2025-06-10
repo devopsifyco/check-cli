@@ -71,9 +71,9 @@ jobs:
           sed -i -E "s/(VALUE +\"FileVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
           sed -i -E "s/(VALUE +\"ProductVersion\", +\")[0-9]+\.[0-9]+\.[0-9]+\"/\1$next_version\"/" resource.rc
           # Update version, revision, build date in checks/version/version.go
-          sed -i -E "s/Version\s+= \"[^"]*\"/Version   = \"$next_version\"/" checks/version/version.go
-          sed -i -E "s/Revision\s+= \"[^"]*\"/Revision  = \"$revision\"/" checks/version/version.go
-          sed -i -E "s/BuildDate\s+= \"[^"]*\"/BuildDate = \"$build_date\"/" checks/version/version.go
+          sed -i -E "s#Version\s+= \"[^\"]*\"#Version   = \"$next_version\"#" checks/version/version.go
+          sed -i -E "s#Revision\s+= \"[^\"]*\"#Revision  = \"$revision\"#" checks/version/version.go
+          sed -i -E "s#BuildDate\s+= \"[^\"]*\"#BuildDate = \"$build_date\"#" checks/version/version.go
 
       - name: Commit and push changes
         if: github.event_name == 'pull_request'
