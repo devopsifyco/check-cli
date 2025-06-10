@@ -13,8 +13,10 @@ import (
 
 	"github.com/devopsifyco/check-cli/checks"
 	"github.com/devopsifyco/check-cli/checks/code"
+	"github.com/devopsifyco/check-cli/checks/version"
 	"github.com/devopsifyco/check-cli/checks/auth"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -38,16 +40,45 @@ func getAuthConfigPath() string {
 }
 
 func main() {
+	var showVersion bool
 	// Create root command
 	rootCmd := &cobra.Command{
 		Use:   "check",
 		Short: "DevOpsify Check Tool for various system checks",
 		Long:  "DevOpsify Check Tool for performing various system checks including version, OS, speed, and SSL certificate checks.",
+		Run: func(cmd *cobra.Command, args []string) {
+			if showVersion {
+				info := map[string]string{
+					"version": version.Version,
+					"revision": version.Revision,
+					"build_date": version.BuildDate,
+				}
+				switch outputFormat {
+				case "json":
+					b, _ := json.MarshalIndent(info, "", "  ")
+					fmt.Println(string(b))
+				case "yaml":
+					type yamlInfo struct {
+						Version   string `yaml:"version"`
+						Revision  string `yaml:"revision"`
+						BuildDate string `yaml:"build_date"`
+					}
+					out := yamlInfo{version.Version, version.Revision, version.BuildDate}
+					b, _ := yaml.Marshal(out)
+					fmt.Print(string(b))
+				default:
+					fmt.Printf("Version: %s\nRevision: %s\nBuildDate: %s\n", version.Version, version.Revision, version.BuildDate)
+				}
+				os.Exit(0)
+			}
+			cmd.Help()
+		},
 	}
 
 	// Add global flags
 	rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "", "Output format (json, yaml)")
 	rootCmd.PersistentFlags().StringVar(&apiKey, "apikey", "", "API key for version checks")
+	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "V", false, "Show CLI version information")
 
 	// Create command registry
 	registry := make(map[string]checks.CheckCommand)

@@ -7,6 +7,12 @@ import (
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
 )
 
+var (
+	Version   = "1.2.3"
+	Revision  = "deadbeef"
+	BuildDate = "2024-06-10"
+)
+
 // Result implements CheckResult interface for version checks
 type Result struct {
 	Version string `json:"version" yaml:"version"`
@@ -55,8 +61,29 @@ func CheckLocal(component string, outputFormat string, fullOutput bool) (*Result
 
 // GetCLIVersion gets the version of the CLI tool itself
 func GetCLIVersion() (string, error) {
-	// This would typically be set during build time
-	return "1.0.0", nil
+	return Version, nil
+}
+
+// GetCLIMetadata returns version, revision, and build date
+func GetCLIMetadata() map[string]string {
+	return map[string]string{
+		"version": Version,
+		"revision": Revision,
+		"buildDate": BuildDate,
+	}
+}
+
+// PrintCLIVersionInfo prints version info in the requested format
+func PrintCLIVersionInfo(outputFormat string) {
+	info := GetCLIMetadata()
+	switch outputFormat {
+	case "json":
+		output.PrintJSON(info)
+	case "yaml":
+		output.PrintYAML(info)
+	default:
+		fmt.Printf("check version %s (rev: %s, date: %s)\n", Version, Revision, BuildDate)
+	}
 }
 
 // GetDockerVersion gets the version of Docker
