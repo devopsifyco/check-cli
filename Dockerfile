@@ -18,10 +18,10 @@ COPY go.sum ./
 # Download dependencies with enhanced retry logic
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    for i in $(seq 1 5); do \
+    for i in $(seq 1 2); do \
         echo "Attempt $i: Downloading dependencies..." && \
         go mod download -x && break || \
-        if [ $i -lt 5 ]; then \
+        if [ $i -lt 2 ]; then \
             echo "Attempt $i failed. Retrying in 3 seconds..." && \
             sleep 3; \
         fi; \
@@ -30,6 +30,10 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Copy source code and resource files
 COPY . .
 
+# Copy build script
+COPY build/build.sh /build.sh
+RUN chmod +x /build.sh
+
 # Create dist directory
 RUN mkdir -p /dist
 
@@ -37,38 +41,12 @@ RUN mkdir -p /dist
 RUN go mod vendor
 ENV GOFLAGS="-mod=vendor"
 
-# Function to build with retry logic
-RUN echo 'build_with_retry() {' > /build.sh && \
-    echo '  os=$1; arch=$2; output=$3' >> /build.sh && \
-    echo '  # Compile Windows resource file only for Windows builds' >> /build.sh && \
-    echo '  if [ "$os" = "windows" ]; then' >> /build.sh && \
-    echo '    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff' >> /build.sh && \
-    echo '  fi' >> /build.sh && \
-    echo '  for i in $(seq 1 5); do' >> /build.sh && \
-    echo '    echo "Attempt $i: Building for $os/$arch..."' >> /build.sh && \
-    echo '    if GOOS=$os GOARCH=$arch go build -v -x -o $output; then' >> /build.sh && \
-    echo '      # Remove resource.syso after Windows build' >> /build.sh && \
-    echo '      if [ "$os" = "windows" ]; then' >> /build.sh && \
-    echo '        rm -f resource.syso' >> /build.sh && \
-    echo '      fi' >> /build.sh && \
-    echo '      return 0' >> /build.sh && \
-    echo '    fi' >> /build.sh && \
-    echo '    if [ $i -lt 5 ]; then' >> /build.sh && \
-    echo '      echo "Attempt $i failed. Retrying in 3 seconds..."' >> /build.sh && \
-    echo '      sleep 3' >> /build.sh && \
-    echo '    fi' >> /build.sh && \
-    echo '  done' >> /build.sh && \
-    echo '  return 1' >> /build.sh && \
-    echo '}' >> /build.sh && \
-    chmod +x /build.sh && \
-    . /build.sh
-
-# Build for multiple platforms with retry logic
+# Use build_with_retry from build.sh
 RUN . /build.sh && build_with_retry windows amd64 /dist/check.exe
-RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
-RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
-RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
-RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
+#RUN . /build.sh && build_with_retry linux amd64 /dist/check-linux-amd64
+#RUN . /build.sh && build_with_retry linux arm64 /dist/check-linux-arm64
+#RUN . /build.sh && build_with_retry darwin amd64 /dist/check-macos-intel
+#RUN . /build.sh && build_with_retry darwin arm64 /dist/check-macos-arm64
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
