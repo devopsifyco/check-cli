@@ -1,13 +1,20 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
+	"os/user"
+	"path/filepath"
+	"runtime"
 
 	"github.com/devopsifyco/check-cli/checks"
 	"github.com/devopsifyco/check-cli/checks/code"
 	"github.com/devopsifyco/check-cli/checks/version"
+	"github.com/devopsifyco/check-cli/checks/auth"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )
@@ -16,6 +23,21 @@ var (
 	outputFormat string
 	apiKey     string
 )
+
+// Path to store the backend token
+func getAuthConfigPath() string {
+	homeDir := ""
+	if u, err := user.Current(); err == nil {
+		homeDir = u.HomeDir
+	} else {
+		homeDir, _ = os.UserHomeDir()
+	}
+	dosDir := filepath.Join(homeDir, ".dos")
+	if _, err := os.Stat(dosDir); os.IsNotExist(err) {
+		_ = os.MkdirAll(dosDir, 0700)
+	}
+	return filepath.Join(dosDir, "checkcli.json")
+}
 
 func main() {
 	var showVersion bool
@@ -186,9 +208,68 @@ func main() {
 	// Add 'code' to root
 	rootCmd.AddCommand(codeCmd)
 
+	// --- Add 'auth' command with subcommands ---
+	authCmd := &cobra.Command{
+		Use:   "auth",
+		Short: "Authentication commands (login, logout)",
+		Long:  "Authentication commands for logging in and out of Google accounts.",
+	}
+
+	authLoginCmd := &cobra.Command{
+		Use:   "login",
+		Short: "Login to Google account",
+		Run: func(cmd *cobra.Command, args []string) {
+			loginCmd := auth.NewAuthLoginCommand()
+			if err := loginCmd.Execute(); err != nil {
+				fmt.Println("Login failed:", err)
+			}
+		},
+	}
+
+	authLogoutCmd := &cobra.Command{
+		Use:   "logout",
+		Short: "Logout from Google account",
+		Run: func(cmd *cobra.Command, args []string) {
+			logoutCmd := auth.NewAuthLogoutCommand()
+			if err := logoutCmd.Execute(); err != nil {
+				fmt.Println("Logout failed:", err)
+			}
+		},
+	}
+
+	authCmd.AddCommand(authLoginCmd)
+	authCmd.AddCommand(authLogoutCmd)
+	rootCmd.AddCommand(authCmd)
+
 	// Execute root command
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+// Helper functions for OAuth2
+func generateStateOauthCookie() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	return base64.URLEncoding.EncodeToString(b)
+}
+
+func openBrowser(url string) {
+	switch runtime.GOOS {
+	case "linux":
+		exec.Command("xdg-open", url).Start()
+	case "windows":
+		exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		exec.Command("open", url).Start()
+	default:
+		fmt.Printf("Please open the following URL in your browser:\n%s\n", url)
+	}
+}
+
+// Helper to pretty-print user info
+func toJsonString(v interface{}) string {
+	b, _ := json.MarshalIndent(v, "", "  ")
+	return string(b)
 } 
