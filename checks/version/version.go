@@ -9,7 +9,7 @@ import (
 
 var (
 	Version   = "0.0.17"
-	Revision  = "68d2510"
+	Revision  = "519719e"
 	BuildDate = "2025-06-10"
 )
 
