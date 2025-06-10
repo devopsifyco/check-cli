@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	Version   = "0.0.15"
-	Revision  = "5dd579e"
+	Version   = "0.0.16"
+	Revision  = "4cdc490"
 	BuildDate = "2025-06-10"
 )
 
