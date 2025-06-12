@@ -71,8 +71,14 @@ func NewAuthLoginCommand() *AuthLoginCommand {
 func (c *AuthLoginCommand) Execute() error {
 	clientID := googleOAuthClientID
 	clientSecret := googleOAuthClientSecret
+	if clientID == "" {
+		clientID = os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
+	}
+	if clientSecret == "" {
+		clientSecret = os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+	}
 	if clientID == "" || clientSecret == "" {
-		return fmt.Errorf("googleOAuthClientID and googleOAuthClientSecret must be set at build time using -ldflags.")
+		return fmt.Errorf("googleOAuthClientID and googleOAuthClientSecret must be set at build time using -ldflags or via environment variables.")
 	}
 	redirectURL := "http://localhost:8085/auth/google/callback"
 	oauthCfg := &oauth2.Config{
@@ -106,7 +112,7 @@ func (c *AuthLoginCommand) Execute() error {
 		if apiKey == "" {
 			apiKey = os.Getenv("CHECK_API_KEY_DEMO")
 		}
-		if apiKey == "" && CheckApiKeyDemo != "" {
+		if apiKey == "" {
 			apiKey = CheckApiKeyDemo
 		}
 		req, err := http.NewRequest("POST", loginUrl, bytes.NewReader(jsonPayload))

@@ -237,12 +237,11 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 	// If cve flag is set, fetch CVEs for each dependency
 	if c.cve {
 		result.CVEs = make(map[string][]CVEResponse)
-		apiKey := os.Getenv("CHECK_API_KEY") // Optionally get from env, or make configurable
+		apiKey := os.Getenv("CHECK_API_KEY")
 		if apiKey == "" {
 			apiKey = os.Getenv("CHECK_API_KEY_DEMO")
 		}
 		if apiKey == "" {
-			// Try to get from auth package variable if available
 			apiKey = auth.CheckApiKeyDemo
 		}
 		apiClient := NewAPIClient(apiKey)
