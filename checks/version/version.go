@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	Version   = "0.0.17"
-	Revision  = "519719e"
-	BuildDate = "2025-06-10"
+	Version   = "0.0.18"
+	Revision  = "dbdfd4f"
+	BuildDate = "2025-06-12"
 )
 
 // Result implements CheckResult interface for version checks
