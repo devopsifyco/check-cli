@@ -43,21 +43,27 @@ RUN echo "Building for Windows AMD64..." && \
     GOOS=windows GOARCH=amd64 go build -v -x -o /dist/check.exe && \
     rm -f resource.syso
 
+# Build for Windows AMD64
+RUN echo "Building for Windows AMD64..." && \
+    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff && \
+    GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check.exe && \
+    rm -f resource.syso
+
 # Build for Linux AMD64
 RUN echo "Building for Linux AMD64..." && \
-    GOOS=linux GOARCH=amd64 go build -v -x -o /dist/check-linux-amd64
+    GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check-linux-amd64
 
 # Build for Linux ARM64
 RUN echo "Building for Linux ARM64..." && \
-    GOOS=linux GOARCH=arm64 go build -v -x -o /dist/check-linux-arm64
+    GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -v -x -o /dist/check-linux-arm64
 
 # Build for macOS Intel
 RUN echo "Building for macOS Intel..." && \
-    GOOS=darwin GOARCH=amd64 go build -v -x -o /dist/check-macos-intel
+    GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check-macos-intel
 
 # Build for macOS ARM64
 RUN echo "Building for macOS ARM64..." && \
-    GOOS=darwin GOARCH=arm64 go build -v -x -o /dist/check-macos-arm64
+    GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -v -x -o /dist/check-macos-arm64
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
