@@ -104,7 +104,16 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t check-builder .
+        run: |
+          docker build \
+            --secret id=google_oauth_client_id,env=GOOGLE_OAUTH_CLIENT_ID \
+            --secret id=google_oauth_client_secret,env=GOOGLE_OAUTH_CLIENT_SECRET \
+            --secret id=check_api_key_demo,env=CHECK_API_KEY_DEMO \
+            -t check-builder .
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          CHECK_API_KEY_DEMO: ${{ secrets.CHECK_API_KEY_DEMO }}
 
       - name: Create container from image
         run: docker create --name check-builder-container check-builder

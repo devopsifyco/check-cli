@@ -12,11 +12,35 @@ if errorlevel 1 (
 echo Creating dist directory if it doesn't exist...
 if not exist dist mkdir dist
 
+echo Creating secrets directory if it doesn't exist...
+if not exist secrets mkdir secrets
+
 echo Cleaning up any existing containers...
 docker rm -f check-builder-container 2>nul
 
-echo Building Docker image...
-docker build -t check-builder .
+REM Prepare secrets
+if defined GOOGLE_OAUTH_CLIENT_ID if defined GOOGLE_OAUTH_CLIENT_SECRET if defined CHECK_API_KEY_DEMO (
+    echo !GOOGLE_OAUTH_CLIENT_ID! > secrets/client_id.txt
+    echo !GOOGLE_OAUTH_CLIENT_SECRET! > secrets/client_secret.txt
+    echo !CHECK_API_KEY_DEMO! > secrets/api_key_demo.txt
+) else (
+    if not exist secrets/client_id.txt (
+        echo Error: Provide GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET env vars, or secrets/client_id.txt and secrets/client_secret.txt files.
+        exit /b 1
+    )
+    if not exist secrets/client_secret.txt (
+        echo Error: Provide GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET env vars, or secrets/client_id.txt and secrets/client_secret.txt files.
+        exit /b 1
+    )
+    if not exist secrets/api_key_demo.txt (
+        echo Error: Provide CHECK_API_KEY_DEMO env var, or secrets/api_key_demo.txt file.
+        exit /b 1
+    )
+)
+
+echo Building Docker image with BuildKit and secrets...
+set DOCKER_BUILDKIT=1
+docker build --secret id=google_oauth_client_id,src=secrets/client_id.txt --secret id=google_oauth_client_secret,src=secrets/client_secret.txt --secret id=check_api_key_demo,src=secrets/api_key_demo.txt -t check-builder .
 if errorlevel 1 (
     echo Failed to build Docker image
     exit /b 1
@@ -39,6 +63,8 @@ if errorlevel 1 (
 
 echo Cleaning up...
 docker rm check-builder-container
+
+del secrets\client_id.txt secrets\client_secret.txt secrets\api_key_demo.txt >nul 2>&1
 
 echo.
 echo All builds completed successfully!

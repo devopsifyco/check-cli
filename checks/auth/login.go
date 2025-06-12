@@ -16,6 +16,12 @@ import (
 	"runtime"
 )
 
+var (
+	googleOAuthClientID     string
+	googleOAuthClientSecret string
+	CheckApiKeyDemo         string
+)
+
 type BackendTokenData struct {
 	AccessToken string `json:"access_token"`
 	Email       string `json:"email,omitempty"`
@@ -63,10 +69,16 @@ func NewAuthLoginCommand() *AuthLoginCommand {
 }
 
 func (c *AuthLoginCommand) Execute() error {
-	clientID := os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
-	clientSecret := os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+	clientID := googleOAuthClientID
+	clientSecret := googleOAuthClientSecret
+	if clientID == "" {
+		clientID = os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
+	}
+	if clientSecret == "" {
+		clientSecret = os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+	}
 	if clientID == "" || clientSecret == "" {
-		return fmt.Errorf("GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET environment variables must be set.")
+		return fmt.Errorf("googleOAuthClientID and googleOAuthClientSecret must be set at build time using -ldflags or via environment variables.")
 	}
 	redirectURL := "http://localhost:8085/auth/google/callback"
 	oauthCfg := &oauth2.Config{
@@ -98,7 +110,10 @@ func (c *AuthLoginCommand) Execute() error {
 		jsonPayload, _ := json.Marshal(payload)
 		apiKey := os.Getenv("CHECK_API_KEY")
 		if apiKey == "" {
-			apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa"
+			apiKey = os.Getenv("CHECK_API_KEY_DEMO")
+		}
+		if apiKey == "" {
+			apiKey = CheckApiKeyDemo
 		}
 		req, err := http.NewRequest("POST", loginUrl, bytes.NewReader(jsonPayload))
 		if err != nil {

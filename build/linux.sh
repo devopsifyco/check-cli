@@ -11,11 +11,34 @@ fi
 echo "Creating dist directory if it doesn't exist..."
 mkdir -p dist
 
+echo "Creating secrets directory if it doesn't exist..."
+mkdir -p secrets
+
 echo "Cleaning up any existing containers..."
 docker rm -f check-builder-container 2>/dev/null || true
 
-echo "Building Docker image..."
-docker build -t check-builder .
+# Prepare secrets
+if [[ -n "$GOOGLE_OAUTH_CLIENT_ID" && -n "$GOOGLE_OAUTH_CLIENT_SECRET" ]]; then
+    echo "$GOOGLE_OAUTH_CLIENT_ID" > secrets/client_id.txt
+    echo "$GOOGLE_OAUTH_CLIENT_SECRET" > secrets/client_secret.txt
+elif [[ ! -f secrets/client_id.txt || ! -f secrets/client_secret.txt ]]; then
+    echo "Error: Provide GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET env vars, or secrets/client_id.txt and secrets/client_secret.txt files."
+    exit 1
+fi
+
+# Prepare CHECK_API_KEY_DEMO secret
+if [[ -n "$CHECK_API_KEY_DEMO" ]]; then
+    echo "$CHECK_API_KEY_DEMO" > secrets/api_key_demo.txt
+elif [[ ! -f secrets/api_key_demo.txt ]]; then
+    echo "Warning: CHECK_API_KEY_DEMO env var or secrets/api_key_demo.txt not provided. Demo API key will not be available."
+fi
+
+echo "Building Docker image with BuildKit and secrets..."
+DOCKER_BUILDKIT=1 docker build \
+    --secret id=google_oauth_client_id,src=secrets/client_id.txt \
+    --secret id=google_oauth_client_secret,src=secrets/client_secret.txt \
+    --secret id=check_api_key_demo,src=secrets/api_key_demo.txt \
+    -t check-builder .
 
 echo "Creating container to extract binaries..."
 docker create --name check-builder-container check-builder
@@ -25,6 +48,7 @@ docker cp check-builder-container:/dist/. dist/
 
 echo "Cleaning up..."
 docker rm check-builder-container
+rm -f secrets/client_id.txt secrets/client_secret.txt secrets/api_key_demo.txt
 
 echo
 echo "All builds completed successfully!"
