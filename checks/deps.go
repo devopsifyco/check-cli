@@ -6,6 +6,7 @@ import (
 
 	"github.com/devopsifyco/check-cli/checks/dependencies"
 	"github.com/devopsifyco/check-cli/checks/utilities/output"
+	"github.com/devopsifyco/check-cli/checks/auth"
 )
 
 // DepsCheckCommand handles the execution of the dependencies check.
@@ -238,7 +239,11 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 		result.CVEs = make(map[string][]CVEResponse)
 		apiKey := os.Getenv("CHECK_API_KEY") // Optionally get from env, or make configurable
 		if apiKey == "" {
-			apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa" // fallback demo key
+			apiKey = os.Getenv("CHECK_API_KEY_DEMO")
+		}
+		if apiKey == "" {
+			// Try to get from auth package variable if available
+			apiKey = auth.CheckApiKeyDemo
 		}
 		apiClient := NewAPIClient(apiKey)
 		versionService := NewVersionService(apiClient)

@@ -650,7 +650,11 @@ type VersionCheckCommand struct {
 func NewVersionCheckCommand(apiKey string, outputFormat string, fullOutput bool, history bool, client bool, cve bool) *VersionCheckCommand {
 	// Use demo API key if none provided
 	if apiKey == "" {
-		apiKey = "SPK1HgBWcxO5EmLsCSP6aIRNhX6wXMYa"
+		apiKey = os.Getenv("CHECK_API_KEY_DEMO")
+	}
+	if apiKey == "" {
+		// Try to get from auth package variable if available
+		apiKey = auth.CheckApiKeyDemo
 	}
 
 	// Create API client and version service

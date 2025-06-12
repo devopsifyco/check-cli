@@ -37,33 +37,36 @@ RUN mkdir -p /dist
 RUN go mod vendor
 ENV GOFLAGS="-mod=vendor"
 
-# Build for Windows AMD64
-RUN echo "Building for Windows AMD64..." && \
-    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff && \
-    GOOS=windows GOARCH=amd64 go build -v -x -o /dist/check.exe && \
-    rm -f resource.syso
-
-# Build for Windows AMD64
-RUN echo "Building for Windows AMD64..." && \
-    x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff && \
-    GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check.exe && \
-    rm -f resource.syso
-
-# Build for Linux AMD64
-RUN echo "Building for Linux AMD64..." && \
-    GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check-linux-amd64
-
-# Build for Linux ARM64
-RUN echo "Building for Linux ARM64..." && \
-    GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -v -x -o /dist/check-linux-arm64
-
-# Build for macOS Intel
-RUN echo "Building for macOS Intel..." && \
-    GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -v -x -o /dist/check-macos-intel
-
-# Build for macOS ARM64
-RUN echo "Building for macOS ARM64..." && \
-    GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -v -x -o /dist/check-macos-arm64
+# Build for all targets in a loop
+RUN --mount=type=secret,id=google_oauth_client_id \
+    --mount=type=secret,id=google_oauth_client_secret \
+    --mount=type=secret,id=check_api_key_demo \
+    set -e; \
+    GOOGLE_OAUTH_CLIENT_ID=$(cat /run/secrets/google_oauth_client_id | tr -d '\r\n'); \
+    GOOGLE_OAUTH_CLIENT_SECRET=$(cat /run/secrets/google_oauth_client_secret | tr -d '\r\n'); \
+    CHECK_API_KEY_DEMO=$(cat /run/secrets/check_api_key_demo | tr -d '\r\n'); \
+    echo "GOOGLE_OAUTH_CLIENT_ID: '$GOOGLE_OAUTH_CLIENT_ID'"; \
+    echo "GOOGLE_OAUTH_CLIENT_SECRET: '$GOOGLE_OAUTH_CLIENT_SECRET'"; \
+    echo "CHECK_API_KEY_DEMO: '$CHECK_API_KEY_DEMO'"; \
+    if [ -z "$GOOGLE_OAUTH_CLIENT_ID" ] || [ -z "$GOOGLE_OAUTH_CLIENT_SECRET" ] || [ -z "$CHECK_API_KEY_DEMO" ]; then \
+      echo "Secrets must not be empty"; exit 1; \
+    fi; \
+    ldflags="-s -w -X auth.googleOAuthClientID=$GOOGLE_OAUTH_CLIENT_ID -X auth.googleOAuthClientSecret=$GOOGLE_OAUTH_CLIENT_SECRET -X auth.CheckApiKeyDemo=$CHECK_API_KEY_DEMO"; \
+    targets="windows amd64 check.exe linux amd64 check-linux-amd64 linux arm64 check-linux-arm64 darwin amd64 check-macos-intel darwin arm64 check-macos-arm64"; \
+    set -- $targets; \
+    while [ $# -gt 0 ]; do \
+      GOOS=$1; GOARCH=$2; OUT=$3; \
+      shift 3; \
+      if [ "$GOOS" = "windows" ]; then \
+        echo "Building for Windows AMD64..."; \
+        x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff; \
+        GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$ldflags" -v -x -o /dist/$OUT; \
+        rm -f resource.syso; \
+      else \
+        echo "Building for $GOOS $GOARCH..."; \
+        GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$ldflags" -v -x -o /dist/$OUT; \
+      fi; \
+    done
 
 # Use a minimal image to copy the binaries
 FROM alpine:latest
