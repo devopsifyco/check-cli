@@ -1,4 +1,4 @@
-package checks
+package net
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 	"sort"
+	"github.com/devopsifyco/check-cli/checks"
 )
 
 // OSResult implements CheckResult interface for OS checks
@@ -78,9 +79,9 @@ type SoftwareInfo struct {
 func (r *OSResult) Print(outputFormat string) {
 	switch outputFormat {
 	case "json":
-		PrintJSON(r)
+		checks.PrintJSON(r)
 	case "yaml":
-		PrintYAML(r)
+		checks.PrintYAML(r)
 	default:
 		fmt.Printf("OS: %s\n", r.OS)
 		fmt.Printf("Architecture: %s\n", r.Arch)
@@ -150,13 +151,13 @@ func (r *OSResult) Print(outputFormat string) {
 
 // OSCheckCommand implements the CheckCommand interface for OS checks
 type OSCheckCommand struct {
-	*BaseCheckCommand
+	*checks.BaseCheckCommand
 }
 
 // NewOSCheckCommand creates a new OS check command
 func NewOSCheckCommand() *OSCheckCommand {
 	return &OSCheckCommand{
-		BaseCheckCommand: NewBaseCheckCommand(
+		BaseCheckCommand: checks.NewBaseCheckCommand(
 			"os",
 			"Check operating system information",
 			"os",
@@ -216,7 +217,7 @@ func getLinuxSoftwareInfo() ([]SoftwareInfo, error) {
 }
 
 // Execute implements the CheckCommand interface
-func (c *OSCheckCommand) Execute(args []string) (CheckResult, error) {
+func (c *OSCheckCommand) Execute(args []string) (checks.CheckResult, error) {
 	// Get memory information
 	memory, err := mem.VirtualMemory()
 	if err != nil {

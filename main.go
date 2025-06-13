@@ -15,6 +15,7 @@ import (
 	"github.com/devopsifyco/check-cli/checks/code"
 	"github.com/devopsifyco/check-cli/checks/version"
 	"github.com/devopsifyco/check-cli/checks/auth"
+	"github.com/devopsifyco/check-cli/checks/net"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )
@@ -86,9 +87,6 @@ func main() {
 	// Register commands with their names
 	commands := map[string]checks.CheckCommand{
 		"version":   checks.NewVersionCheckCommand(apiKey, "", false, false, false, false),
-		"os":        checks.NewOSCheckCommand(),
-		"speed":     checks.NewSpeedCheckCommand(),
-		"ssl":       checks.NewSSLCheckCommand(),
 	}
 
 	// Add commands to root
@@ -240,6 +238,63 @@ func main() {
 	authCmd.AddCommand(authLoginCmd)
 	authCmd.AddCommand(authLogoutCmd)
 	rootCmd.AddCommand(authCmd)
+
+	// --- Add 'net' command with subcommands ---
+	netCmd := &cobra.Command{
+		Use:   "net",
+		Short: "Network related checks (speed, ssl, os)",
+		Long:  "Network related checks: speed test, SSL certificate, and OS info.",
+	}
+
+	// 'net speed' subcommand
+	netSpeedCmd := &cobra.Command{
+		Use:   "speed",
+		Short: "Run a network speed test",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmdObj := net.NewSpeedCheckCommand()
+			result, err := cmdObj.Execute(args)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			result.Print(outputFormat)
+		},
+	}
+
+	// 'net ssl' subcommand
+	netSSLCmd := &cobra.Command{
+		Use:   "ssl [domain]",
+		Short: "Check SSL certificate for a domain",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmdObj := net.NewSSLCheckCommand()
+			result, err := cmdObj.Execute(args)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			result.Print(outputFormat)
+		},
+	}
+
+	// 'net os' subcommand
+	netOSCmd := &cobra.Command{
+		Use:   "os",
+		Short: "Check operating system information",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmdObj := net.NewOSCheckCommand()
+			result, err := cmdObj.Execute(args)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			result.Print(outputFormat)
+		},
+	}
+
+	netCmd.AddCommand(netSpeedCmd)
+	netCmd.AddCommand(netSSLCmd)
+	netCmd.AddCommand(netOSCmd)
+	rootCmd.AddCommand(netCmd)
 
 	// Execute root command
 	if err := rootCmd.Execute(); err != nil {

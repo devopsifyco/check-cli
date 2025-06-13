@@ -94,16 +94,16 @@ func getSystemDateFormat() string {
 	}
 }
 
-// formatTime helper function to safely format nullable time values using system date format
-func formatTime(t *time.Time) string {
+// FormatTime helper function to safely format nullable time values using system date format
+func FormatTime(t *time.Time) string {
 	if t == nil {
 		return "N/A"
 	}
 	return t.Format(getSystemDateFormat())
 }
 
-// formatTimeForOutput helper function to format time for JSON/YAML output
-func formatTimeForOutput(t *time.Time) string {
+// FormatTimeForOutput helper function to format time for JSON/YAML output
+func FormatTimeForOutput(t *time.Time) string {
 	if t == nil {
 		return ""
 	}
@@ -419,7 +419,7 @@ func (p *VersionPrinter) PrintVersion(result *VersionResponseFull) {
 			fmt.Printf("Name: %s\n", result.Name)
 			fmt.Printf("Version: %s\n", result.Version)
 			if result.EOL != nil {
-				fmt.Printf("EOL Date: %s\n", formatTime(result.EOL))
+				fmt.Printf("EOL Date: %s\n", FormatTime(result.EOL))
 			}
 		}
 	}
@@ -433,16 +433,16 @@ func (p *VersionPrinter) printFullVersion(result *VersionResponseFull) {
 		fmt.Printf("Vendor: %s\n", *result.Vendor)
 	}
 	if !result.ReleaseDate.IsZero() {
-		fmt.Printf("Release Date: %s\n", formatTime(&result.ReleaseDate))
+		fmt.Printf("Release Date: %s\n", FormatTime(&result.ReleaseDate))
 	}
 	if result.ActiveSupportEndDate != nil {
-		fmt.Printf("Active Support End: %s\n", formatTime(result.ActiveSupportEndDate))
+		fmt.Printf("Active Support End: %s\n", FormatTime(result.ActiveSupportEndDate))
 	}
 	if result.SecuritySupportEndDate != nil {
-		fmt.Printf("Security Support End: %s\n", formatTime(result.SecuritySupportEndDate))
+		fmt.Printf("Security Support End: %s\n", FormatTime(result.SecuritySupportEndDate))
 	}
 	if result.EOL != nil {
-		fmt.Printf("EOL Date: %s\n", formatTime(result.EOL))
+		fmt.Printf("EOL Date: %s\n", FormatTime(result.EOL))
 	}
 }
 
@@ -578,12 +578,12 @@ func (r *VersionResult) Print(outputFormat string) {
 	output := structuredOutput{
 		Name:               r.Name,
 		Version:            r.Version,
-		ReleaseDate:        formatTimeForOutput(r.ReleaseDate),
-		ActiveSupportEnd:   formatTimeForOutput(r.ActiveSupportEnd),
-		SecuritySupportEnd: formatTimeForOutput(r.SecuritySupportEnd),
-		EOLDate:           formatTimeForOutput(r.EOLDate),
+		ReleaseDate:        FormatTimeForOutput(r.ReleaseDate),
+		ActiveSupportEnd:   FormatTimeForOutput(r.ActiveSupportEnd),
+		SecuritySupportEnd: FormatTimeForOutput(r.SecuritySupportEnd),
+		EOLDate:           FormatTimeForOutput(r.EOLDate),
 		//ID:                r.ID,
-		CreatedAt:         formatTimeForOutput(r.CreatedAt),
+		CreatedAt:         FormatTimeForOutput(r.CreatedAt),
 	}
 
 	switch outputFormat {
@@ -604,12 +604,12 @@ func (r *VersionResult) Print(outputFormat string) {
 	default:
 		fmt.Printf("Name: %s\n", r.Name)
 		fmt.Printf("Version: %s\n", r.Version)
-		fmt.Printf("Release Date: %s\n", formatTime(r.ReleaseDate))
-		fmt.Printf("Active Support End: %s\n", formatTime(r.ActiveSupportEnd))
-		fmt.Printf("Security Support End: %s\n", formatTime(r.SecuritySupportEnd))
-		fmt.Printf("EOL Date: %s\n", formatTime(r.EOLDate))		
+		fmt.Printf("Release Date: %s\n", FormatTime(r.ReleaseDate))
+		fmt.Printf("Active Support End: %s\n", FormatTime(r.ActiveSupportEnd))
+		fmt.Printf("Security Support End: %s\n", FormatTime(r.SecuritySupportEnd))
+		fmt.Printf("EOL Date: %s\n", FormatTime(r.EOLDate))		
 		if r.CreatedAt != nil {
-			fmt.Printf("Created At: %s\n", formatTime(r.CreatedAt))
+			fmt.Printf("Created At: %s\n", FormatTime(r.CreatedAt))
 		}
 	}
 }
@@ -619,10 +619,10 @@ func (r *VersionResult) String() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "Name: %s\n", r.Name)
 	fmt.Fprintf(&b, "Version: %s\n", r.Version)
-	fmt.Fprintf(&b, "Release Date: %s\n", formatTime(r.ReleaseDate))
-	fmt.Fprintf(&b, "Active Support End: %s\n", formatTime(r.ActiveSupportEnd))
-	fmt.Fprintf(&b, "Security Support End: %s\n", formatTime(r.SecuritySupportEnd))
-	fmt.Fprintf(&b, "EOL Date: %s\n", formatTime(r.EOLDate))
+	fmt.Fprintf(&b, "Release Date: %s\n", FormatTime(r.ReleaseDate))
+	fmt.Fprintf(&b, "Active Support End: %s\n", FormatTime(r.ActiveSupportEnd))
+	fmt.Fprintf(&b, "Security Support End: %s\n", FormatTime(r.SecuritySupportEnd))
+	fmt.Fprintf(&b, "EOL Date: %s\n", FormatTime(r.EOLDate))
 	if r.Error != "" {
 		fmt.Fprintf(&b, "Error: %s\n", r.Error)
 	}
@@ -752,7 +752,7 @@ func (cr *CombinedResult) Print(outputFormat string) {
 		if short, ok := cr.Version.(*VersionResponseShort); ok {
 			fmt.Printf("Name: %s\n", short.Name)
 			fmt.Printf("Version: %s\n", short.Version)
-			fmt.Printf("EOL Date: %s\n", formatTime(short.EOL))
+			fmt.Printf("EOL Date: %s\n", FormatTime(short.EOL))
 		} else if full, ok := cr.Version.(*VersionResponseFull); ok {
 			// Name & Vendor on one line, aligned
 			if full.Vendor != nil {
@@ -762,18 +762,18 @@ func (cr *CombinedResult) Print(outputFormat string) {
 			}
 			// Version & Release Date on one line, aligned
 			if !full.ReleaseDate.IsZero() {
-				fmt.Printf("Version: %-17s          Release Date: %s\n", full.Version, formatTime(&full.ReleaseDate))
+				fmt.Printf("Version: %-17s          Release Date: %s\n", full.Version, FormatTime(&full.ReleaseDate))
 			} else {
 				fmt.Printf("Version: %s\n", full.Version)
 			}
 			if full.ActiveSupportEndDate != nil {
-				fmt.Printf("Active Support End: %s\n", formatTime(full.ActiveSupportEndDate))
+				fmt.Printf("Active Support End: %s\n", FormatTime(full.ActiveSupportEndDate))
 			}
 			if full.SecuritySupportEndDate != nil {
-				fmt.Printf("Security Support End: %s\n", formatTime(full.SecuritySupportEndDate))
+				fmt.Printf("Security Support End: %s\n", FormatTime(full.SecuritySupportEndDate))
 			}
 			if full.EOL != nil {
-				fmt.Printf("EOL Date: %s\n", formatTime(full.EOL))
+				fmt.Printf("EOL Date: %s\n", FormatTime(full.EOL))
 			}
 		}
 
@@ -908,7 +908,7 @@ func (r *VersionResponseShort) Print(outputFormat string) {
 			structuredOutput: structuredOutput{
 				Name:    version.Name,
 				Version: version.Version,
-				EOLDate: formatTimeForOutput(version.EOL),
+				EOLDate: FormatTimeForOutput(version.EOL),
 			},
 			CVEs: cves,
 		}
@@ -931,7 +931,7 @@ func (r *VersionResponseShort) Print(outputFormat string) {
 		default:
 			fmt.Printf("Name: %s\n", version.Name)
 			fmt.Printf("Version: %s\n", version.Version)
-			fmt.Printf("EOL Date: %s\n", formatTime(version.EOL))
+			fmt.Printf("EOL Date: %s\n", FormatTime(version.EOL))
 			
 			if len(cves) > 0 {
 				fmt.Println("\nCVEs:")
@@ -956,7 +956,7 @@ func (r *VersionResponseShort) Print(outputFormat string) {
 	output := structuredOutput{
 		Name:    r.Name,
 		Version: r.Version,
-		EOLDate: formatTimeForOutput(r.EOL),
+		EOLDate: FormatTimeForOutput(r.EOL),
 	}
 
 	switch outputFormat {
@@ -977,7 +977,7 @@ func (r *VersionResponseShort) Print(outputFormat string) {
 	default:
 		fmt.Printf("Name: %s\n", r.Name)
 		fmt.Printf("Version: %s\n", r.Version)
-		fmt.Printf("EOL Date: %s\n", formatTime(r.EOL))
+		fmt.Printf("EOL Date: %s\n", FormatTime(r.EOL))
 	}
 }
 
@@ -991,8 +991,8 @@ func (r VersionHistoryList) Print(outputFormat string) {
 				Name:               version.ProductName,
 				Version:            version.Version,
 				Vendor:             version.Vendor,
-				ReleaseDate:        formatTimeForOutput(version.ReleaseDate),
-				EOLDate:            formatTimeForOutput(version.EOL),
+				ReleaseDate:        FormatTimeForOutput(version.ReleaseDate),
+				EOLDate:            FormatTimeForOutput(version.EOL),
 			}
 		}
 
@@ -1018,10 +1018,10 @@ func (r VersionHistoryList) Print(outputFormat string) {
 		for i, version := range r {
 			rows[i] = []string{
 				version.Version,
-				formatTime(version.ReleaseDate),
-				formatTime(version.ActiveSupportEndDate),
-				formatTime(version.SecuritySupportEndDate),
-				formatTime(version.EOL),
+				FormatTime(version.ReleaseDate),
+				FormatTime(version.ActiveSupportEndDate),
+				FormatTime(version.SecuritySupportEndDate),
+				FormatTime(version.EOL),
 			}
 		}
 		output.PrintTable(header, rows, colWidths, rightAlign)
@@ -1094,10 +1094,10 @@ func (r *VersionResponseFull) Print(outputFormat string) {
 	output := structuredOutput{
 		Name:               r.Name,
 		Version:            r.Version,
-		ReleaseDate:        formatTimeForOutput(&r.ReleaseDate),
-		ActiveSupportEnd:   formatTimeForOutput(r.ActiveSupportEndDate),
-		SecuritySupportEnd: formatTimeForOutput(r.SecuritySupportEndDate),
-		EOLDate:           formatTimeForOutput(r.EOL),
+		ReleaseDate:        FormatTimeForOutput(&r.ReleaseDate),
+		ActiveSupportEnd:   FormatTimeForOutput(r.ActiveSupportEndDate),
+		SecuritySupportEnd: FormatTimeForOutput(r.SecuritySupportEndDate),
+		EOLDate:           FormatTimeForOutput(r.EOL),
 		//ID:                r.ID,
 	}
 	if r.Vendor != nil {
@@ -1125,10 +1125,10 @@ func (r *VersionResponseFull) Print(outputFormat string) {
 		if r.Vendor != nil {
 			fmt.Printf("Vendor: %s\n", *r.Vendor)
 		}
-		fmt.Printf("Release Date: %s\n", formatTime(&r.ReleaseDate))
-		fmt.Printf("Active Support End: %s\n", formatTime(r.ActiveSupportEndDate))
-		fmt.Printf("Security Support End: %s\n", formatTime(r.SecuritySupportEndDate))
-		fmt.Printf("EOL Date: %s\n", formatTime(r.EOL))
+		fmt.Printf("Release Date: %s\n", FormatTime(&r.ReleaseDate))
+		fmt.Printf("Active Support End: %s\n", FormatTime(r.ActiveSupportEndDate))
+		fmt.Printf("Security Support End: %s\n", FormatTime(r.SecuritySupportEndDate))
+		fmt.Printf("EOL Date: %s\n", FormatTime(r.EOL))
 		//fmt.Printf("ID: %d\n", r.ID)
 	}
 } 

@@ -1,4 +1,4 @@
-package checks
+package net
 
 import (
 	"crypto/tls"
@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 	"gopkg.in/yaml.v3"
+	"github.com/devopsifyco/check-cli/checks"
 )
 
 // SSLCertResult implements CheckResult interface for SSL certificate checks
@@ -45,8 +46,8 @@ func (r *SSLCertResult) Print(outputFormat string) {
 			Valid:         r.Valid,
 			Issuer:        r.Issuer,
 			Subject:       r.Subject,
-			NotBefore:     formatTimeForOutput(&r.NotBefore),
-			NotAfter:      formatTimeForOutput(&r.NotAfter),
+			NotBefore:     checks.FormatTimeForOutput(&r.NotBefore),
+			NotAfter:      checks.FormatTimeForOutput(&r.NotAfter),
 			ExpiresInDays: r.ExpiresInDays,
 			SerialNumber:  r.SerialNumber,
 			Error:         r.Error,
@@ -76,8 +77,8 @@ func (r *SSLCertResult) Print(outputFormat string) {
 			Valid:         r.Valid,
 			Issuer:        r.Issuer,
 			Subject:       r.Subject,
-			NotBefore:     formatTimeForOutput(&r.NotBefore),
-			NotAfter:      formatTimeForOutput(&r.NotAfter),
+			NotBefore:     checks.FormatTimeForOutput(&r.NotBefore),
+			NotAfter:      checks.FormatTimeForOutput(&r.NotAfter),
 			ExpiresInDays: r.ExpiresInDays,
 			SerialNumber:  r.SerialNumber,
 			Error:         r.Error,
@@ -94,8 +95,8 @@ func (r *SSLCertResult) Print(outputFormat string) {
 		fmt.Printf("Valid: %v\n", r.Valid)
 		fmt.Printf("Issuer: %s\n", r.Issuer)
 		fmt.Printf("Subject: %s\n", r.Subject)
-		fmt.Printf("Valid From: %s\n", formatTime(&r.NotBefore))
-		fmt.Printf("Valid Until: %s\n", formatTime(&r.NotAfter))
+		fmt.Printf("Valid From: %s\n", checks.FormatTime(&r.NotBefore))
+		fmt.Printf("Valid Until: %s\n", checks.FormatTime(&r.NotAfter))
 		fmt.Printf("Expires In: %d days\n", r.ExpiresInDays)
 		fmt.Printf("Serial Number: %s\n", r.SerialNumber)
 		if len(r.SANs) > 0 {
@@ -112,14 +113,14 @@ func (r *SSLCertResult) Print(outputFormat string) {
 
 // SSLCheckCommand implements the CheckCommand interface for SSL certificate checks
 type SSLCheckCommand struct {
-	*BaseCheckCommand
+	*checks.BaseCheckCommand
 	showChain bool
 }
 
 // NewSSLCheckCommand creates a new SSL certificate check command
 func NewSSLCheckCommand() *SSLCheckCommand {
 	return &SSLCheckCommand{
-		BaseCheckCommand: NewBaseCheckCommand(
+		BaseCheckCommand: checks.NewBaseCheckCommand(
 			"ssl",
 			"Check SSL certificate for a domain",
 			"ssl [domain]",
@@ -129,7 +130,7 @@ func NewSSLCheckCommand() *SSLCheckCommand {
 }
 
 // Execute implements the CheckCommand interface
-func (c *SSLCheckCommand) Execute(args []string) (CheckResult, error) {
+func (c *SSLCheckCommand) Execute(args []string) (checks.CheckResult, error) {
 	if len(args) == 0 {
 		return nil, fmt.Errorf("domain is required")
 	}
@@ -275,8 +276,8 @@ func printSSLCertResult(result *SSLCertResult) {
 	fmt.Printf("Status: %s\n", getStatusString(result.Valid))
 	fmt.Printf("Issuer: %s\n", result.Issuer)
 	fmt.Printf("Subject: %s\n", result.Subject)
-	fmt.Printf("Valid From: %s\n", formatTime(&result.NotBefore))
-	fmt.Printf("Valid Until: %s\n", formatTime(&result.NotAfter))
+	fmt.Printf("Valid From: %s\n", checks.FormatTime(&result.NotBefore))
+	fmt.Printf("Valid Until: %s\n", checks.FormatTime(&result.NotAfter))
 	fmt.Printf("Expires In: %d days\n", result.ExpiresInDays)
 	fmt.Printf("Serial Number: %s\n", result.SerialNumber)
 	if len(result.SANs) > 0 {
