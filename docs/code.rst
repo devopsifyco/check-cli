@@ -29,6 +29,8 @@ Analyzes project dependencies from various package manager files.
 
 Options:
 - path: Path to dependency file or directory (optional, defaults to current directory)
+  
+  If [path] is a git URL, the repository will be cloned to a temporary directory and scanned.
 - -o, --output: Output format (optional: json, yaml)
 - --cve: Include CVE information for each dependency (optional)
 
@@ -49,6 +51,8 @@ Counts lines of code in a directory or file using gocloc.
 
 Options:
 - path: Path to directory or file (optional, defaults to current directory)
+  
+  If [path] is a git URL, the repository will be cloned to a temporary directory and scanned.
 - -o, --output: Output format (optional: json, yaml)
 
 Examples:
