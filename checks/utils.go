@@ -15,8 +15,9 @@ func CommandExists(cmd string) bool {
 func IsGitURL(path string) bool {
 	return len(path) > 4 && ( // quick length check
 		// HTTPS, SSH, git, file, or ends with .git
-		len(path) > 8 && (path[:8] == "https://" || path[:7] == "http://" || path[:6] == "git://" || path[:4] == "git@" || path[:6] == "ssh://" || path[:7] == "file://") ||
-		(len(path) > 4 && path[len(path)-4:] == ".git"))
+		(strings.HasPrefix(path, "https://") || strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "git://") || 
+		 strings.HasPrefix(path, "git@") || strings.HasPrefix(path, "ssh://") || strings.HasPrefix(path, "file://")) ||
+		strings.HasSuffix(path, ".git"))
 }
 
 // CloneGitRepo clones the git repo at url to a temp dir, returns the dir path and a cleanup func
