@@ -26,7 +26,7 @@ func CloneGitRepo(url string) (string, func(), error) {
 	if err != nil {
 		return "", nil, err
 	}
-	cmd := exec.Command("git", "clone", url, tmpDir)
+	cmd := exec.Command("git", "clone", "--depth=1", url, tmpDir)
 	cmd.Stdout = nil
 	cmd.Stderr = nil
 	if err := cmd.Run(); err != nil {
