@@ -184,8 +184,6 @@ func (r *DepsResult) Print(outputFormat string) {
 						rows[i] = []string{cveID, published, score, title}
 					}
 					output.PrintTable(header, rows, colWidths, rightAlign)
-				} else {
-					fmt.Println("    No CVE")
 				}
 			}
 		}
@@ -209,6 +207,7 @@ func NewDepsCheckCommand(outputFormat string, cve bool) *DepsCheckCommand {
 // Execute implements the CheckCommand interface
 func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 	var targetPath string
+	var cleanup func()
 	if len(args) > 0 {
 		targetPath = args[0]
 	} else {
@@ -219,6 +218,21 @@ func (c *DepsCheckCommand) Execute(args []string) (CheckResult, error) {
 		}
 		targetPath = wd
 	}
+
+	// Handle git URL
+	if IsGitURL(targetPath) {
+		dir, clean, err := CloneGitRepo(targetPath)
+		if err != nil {
+			return &DepsResult{Error: "failed to clone git repo: " + err.Error()}, err
+		}
+		targetPath = dir
+		cleanup = clean
+	}
+	defer func() {
+		if cleanup != nil {
+			cleanup()
+		}
+	}()
 
 	deps, err := dependencies.ReadDependencies(targetPath, c.outputFormat)
 	result := &DepsResult{
