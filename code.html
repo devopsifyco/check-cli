@@ -117,9 +117,14 @@
 </pre></div>
 </div>
 <p>Options:
-- path: Path to dependency file or directory (optional, defaults to current directory)
-- -o, –output: Output format (optional: json, yaml)
-- –cve: Include CVE information for each dependency (optional)</p>
+- path: Path to dependency file or directory (optional, defaults to current directory)</p>
+<blockquote>
+<div><p>If [path] is a git URL, the repository will be cloned to a temporary directory and scanned.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>-o, –output: Output format (optional: json, yaml)</p></li>
+<li><p>–cve: Include CVE information for each dependency (optional)</p></li>
+</ul>
 <p>Examples:
 .. code-block:: bash</p>
 <blockquote>
@@ -135,8 +140,13 @@ check code deps ./checks/dependencies/samples/pom.xml –cve -o json</p>
 </pre></div>
 </div>
 <p>Options:
-- path: Path to directory or file (optional, defaults to current directory)
-- -o, –output: Output format (optional: json, yaml)</p>
+- path: Path to directory or file (optional, defaults to current directory)</p>
+<blockquote>
+<div><p>If [path] is a git URL, the repository will be cloned to a temporary directory and scanned.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>-o, –output: Output format (optional: json, yaml)</p></li>
+</ul>
 <p>Examples:
 .. code-block:: bash</p>
 <blockquote>
