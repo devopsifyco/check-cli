@@ -15,6 +15,9 @@ if not exist dist mkdir dist
 echo Creating secrets directory if it doesn't exist...
 if not exist secrets mkdir secrets
 
+echo Creating vendor directory and downloading dependencies...
+go mod vendor
+
 echo Cleaning up any existing containers...
 docker rm -f check-builder-container 2>nul
 

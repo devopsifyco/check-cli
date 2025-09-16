@@ -1,8 +1,8 @@
 #include "winres.h"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     0,0,18
-PRODUCTVERSION  0,0,18
+FILEVERSION     0,0,19
+PRODUCTVERSION  0,0,19
 FILEFLAGSMASK   0x3fL
 FILEFLAGS       0x0L
 FILEOS          0x40004L
@@ -15,12 +15,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "DevOpsify"
             VALUE "FileDescription", "DevOpsify Check Tool for system checks"
-            VALUE "FileVersion", "0.0.18"
+            VALUE "FileVersion", "0.0.19"
             VALUE "InternalName", "check.exe"
             VALUE "LegalCopyright", "Copyright© 2025 DevOpsify"
             VALUE "OriginalFilename", "check.exe"
             VALUE "ProductName", "DevOpsify Check Tool"
-            VALUE "ProductVersion", "0.0.18"
+            VALUE "ProductVersion", "0.0.19"
         END
     END
     BLOCK "VarFileInfo"

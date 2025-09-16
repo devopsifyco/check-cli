@@ -33,8 +33,8 @@ COPY . .
 # Create dist directory
 RUN mkdir -p /dist
 
-# Create vendor directory
-RUN go mod vendor
+# Copy vendor directory from local
+COPY vendor/ vendor/
 ENV GOFLAGS="-mod=vendor"
 
 # Build for all targets in a loop
@@ -62,9 +62,9 @@ RUN --mount=type=secret,id=google_oauth_client_id \
         x86_64-w64-mingw32-windres -i resource.rc -o resource.syso -O coff; \
         GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$ldflags" -v -x -o /dist/$OUT; \
         rm -f resource.syso; \
-      #else \
-      #  echo "Building for $GOOS $GOARCH..."; \
-      #  GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$ldflags" -v -x -o /dist/$OUT; \
+      else \
+        echo "Building for $GOOS $GOARCH..."; \
+        GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$ldflags" -v -x -o /dist/$OUT; \
       fi; \
     done
 

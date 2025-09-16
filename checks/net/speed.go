@@ -1,4 +1,4 @@
-package checks
+package net
 
 import (
 	"archive/zip"
@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"strings"
 	"gopkg.in/yaml.v3"
+	"github.com/devopsifyco/check-cli/checks"
 )
 
 // SpeedResult implements CheckResult interface for speed checks
@@ -91,14 +92,14 @@ func (r *SpeedResult) Print(outputFormat string) {
 
 // SpeedCheckCommand implements the CheckCommand interface for speed checks
 type SpeedCheckCommand struct {
-	*BaseCheckCommand
+	*checks.BaseCheckCommand
 	showServer bool
 }
 
 // NewSpeedCheckCommand creates a new speed check command
 func NewSpeedCheckCommand() *SpeedCheckCommand {
 	return &SpeedCheckCommand{
-		BaseCheckCommand: NewBaseCheckCommand(
+		BaseCheckCommand: checks.NewBaseCheckCommand(
 			"speed",
 			"Run a network speed test",
 			"speed",
@@ -108,7 +109,7 @@ func NewSpeedCheckCommand() *SpeedCheckCommand {
 }
 
 // Execute implements the CheckCommand interface
-func (c *SpeedCheckCommand) Execute(args []string) (CheckResult, error) {
+func (c *SpeedCheckCommand) Execute(args []string) (checks.CheckResult, error) {
 	var result SpeedResult
 	var err error
 

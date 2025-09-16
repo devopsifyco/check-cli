@@ -73,6 +73,7 @@ func NewLocCheckCommand(outputFormat string) *LocCheckCommand {
 // If no path is provided, it defaults to the current directory.
 func (c *LocCheckCommand) Execute(args []string) (checks.CheckResult, error) {
 	var target string
+	var cleanup func()
 	if len(args) > 0 && args[0] != "" {
 		target = args[0]
 	} else {
@@ -82,6 +83,22 @@ func (c *LocCheckCommand) Execute(args []string) (checks.CheckResult, error) {
 		}
 		target = cwd
 	}
+
+	// Handle git URL
+	if checks.IsGitURL(target) {
+		dir, clean, err := checks.CloneGitRepo(target)
+		if err != nil {
+			return &LocResult{Error: "failed to clone git repo: " + err.Error()}, err
+		}
+		target = dir
+		cleanup = clean
+	}
+	defer func() {
+		if cleanup != nil {
+			cleanup()
+		}
+	}()
+
 	// Expand to absolute path
 	absPath, err := filepath.Abs(target)
 	if err != nil {
