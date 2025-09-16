@@ -3,6 +3,7 @@ package checks
 import (
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // CommandExists checks if a command exists in PATH
