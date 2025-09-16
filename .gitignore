@@ -2,3 +2,4 @@ dist/*
 secrets/*
 checks/dependencies/samples/obj/*
 checks/dependencies/samples/bin/*
+vendor/*

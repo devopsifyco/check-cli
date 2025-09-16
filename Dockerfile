@@ -33,8 +33,8 @@ COPY . .
 # Create dist directory
 RUN mkdir -p /dist
 
-# Create vendor directory
-RUN go mod vendor
+# Copy vendor directory from local
+COPY vendor/ vendor/
 ENV GOFLAGS="-mod=vendor"
 
 # Build for all targets in a loop
