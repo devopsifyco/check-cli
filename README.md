@@ -74,7 +74,7 @@ chmod +x check-linux-amd64
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.19/check.exe" -OutFile "check.exe"
+$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri "https://github.com/devopsifyco/check-cli/releases/download/0.0.19/check.exe" -OutFile "check.exe"
 .\check.exe --help
 ```
 
