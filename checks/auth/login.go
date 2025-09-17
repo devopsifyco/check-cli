@@ -164,9 +164,20 @@ func (c *AuthLoginCommand) Execute() error {
 			log.Println("Token save error:", err)
 			return
 		}
-		fmt.Fprintf(w, "Login successful! You can close this window.\n")
-		fmt.Printf("Login successful!")
-		go func() { time.Sleep(1 * time.Second); server.Shutdown(context.Background()) }()
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, `Login successful! <a href="#" onclick="window.close()">Click here to close this window</a>
+<script>
+setTimeout(function() {
+    window.close();
+}, 3000);
+</script>`)
+		log.Println("Login successful!")
+		// Wait longer before shutting down to ensure the page is fully rendered
+		go func() { 
+			time.Sleep(4 * time.Second)
+			server.Shutdown(context.Background())
+		}()
 	})
 	fmt.Println("Opening browser for Google login...")
 	openBrowser(url)
