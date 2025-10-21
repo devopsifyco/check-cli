@@ -9,7 +9,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/shirou/gopsutil/v3 v3.24.2
 	github.com/spf13/cobra v1.8.0
-	// Promoted to direct dependency because it is now imported directly in the codebase.
+	// Direct dependency for OAuth authentication in internal/auth/oauth.go.
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sys v0.17.0
 	gopkg.in/yaml.v3 v3.0.1
