@@ -119,7 +119,6 @@ The built executables will be placed in the `dist` directory:
 - `check-macos-arm64` (macOS ARM64)
 
 ### Running the Built Executables
-
 ```sh
 ./dist/check-linux-amd64 --help
 ./dist/check-macos-intel --help
