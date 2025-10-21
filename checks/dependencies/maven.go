@@ -17,7 +17,6 @@ type MavenProject struct {
 	Properties   Properties        `xml:"properties"`
 	Dependencies []MavenDependency `xml:"dependencies>dependency"`
 	DependencyManagement *DependencyManagement `xml:"dependencyManagement"`
-	// TODO: Add support for properties, parent poms, dependencyManagement, etc. if needed
 }
 
 // Parent represents the parent element in a pom.xml file
@@ -48,7 +47,6 @@ type MavenDependency struct {
 	GroupID    string `xml:"groupId"`
 	ArtifactID string `xml:"artifactId"`
 	Version    string `xml:"version"`
-	// TODO: Add scope, type, etc. if needed
 }
 
 // resolveVersion resolves a version string that might contain property references
