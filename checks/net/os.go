@@ -187,8 +187,7 @@ func getWindowsSoftwareInfo() ([]SoftwareInfo, error) {
 	}
 
 	var software []SoftwareInfo
-	// TODO: Implement Windows registry scanning
-	// This is a placeholder that returns an empty list for now
+	// Windows registry scanning not implemented yet
 	return software, nil
 }
 
@@ -199,8 +198,7 @@ func getDarwinSoftwareInfo() ([]SoftwareInfo, error) {
 	}
 
 	var software []SoftwareInfo
-	// TODO: Implement macOS software scanning
-	// This is a placeholder that returns an empty list for now
+	// macOS software scanning not implemented yet
 	return software, nil
 }
 
@@ -211,8 +209,7 @@ func getLinuxSoftwareInfo() ([]SoftwareInfo, error) {
 	}
 
 	var software []SoftwareInfo
-	// TODO: Implement Linux package manager scanning
-	// This is a placeholder that returns an empty list for now
+	// Linux package manager scanning not implemented yet
 	return software, nil
 }
 

@@ -94,36 +94,36 @@ $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri "https://github
 - `CONTRIBUTING.md` - Contribution guidelines
 - `LICENSE` - License file
 
-**Build using Docker (recommended for all platforms):**
+## 🔨 Building from Source
 
-On **Windows**:
+### Using Docker (Recommended)
 
-     ```bat
-     build\windows.bat
-     ```
-On **Linux/macOS**:
+**Windows:**
+```bat
+build\windows.bat
+```
 
-     ```sh
-     bash build/linux.sh
-     # or, after making it executable:
-     chmod +x build/linux.sh
-     ./build/linux.sh
-     ```
+**Linux/macOS:**
+```sh
+bash build/linux.sh
+# or, after making it executable:
+chmod +x build/linux.sh
+./build/linux.sh
+```
 
-   The built executables will be placed in the `dist` directory:
-   - `check.exe` (Windows)
-   - `check-linux-amd64` (Linux AMD64)
-   - `check-linux-arm64` (Linux ARM64)
-   - `check-macos-intel` (macOS Intel)
-   - `check-macos-arm64` (macOS ARM64)
+The built executables will be placed in the `dist` directory:
+- `check.exe` (Windows)
+- `check-linux-amd64` (Linux AMD64)
+- `check-linux-arm64` (Linux ARM64)
+- `check-macos-intel` (macOS Intel)
+- `check-macos-arm64` (macOS ARM64)
 
-**Run the CLI:**
-   - On your platform, use the appropriate executable from the `dist` directory. For example:
-     ```sh
-     ./dist/check-linux-amd64 --help
-     ./dist/check-macos-intel --help
-     ./dist/check.exe --help
-     ```
+### Running the Built Executables
+```sh
+./dist/check-linux-amd64 --help
+./dist/check-macos-intel --help
+./dist/check.exe --help
+```
 
 For more details, see the [official documentation](https://devopsifyco.github.io/check-cli).
 

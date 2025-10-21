@@ -1058,15 +1058,13 @@ func printError(err string, outputFormat string) {
 
 // getWindowsDateFormat returns the date format for Windows
 func getWindowsDateFormat() string {
-	// TODO: Implement Windows-specific date format detection
-	// For now, return a default format
+	// Returns ISO 8601 format (YYYY-MM-DD)
 	return "2006-01-02"
 }
 
 // getUnixDateFormat returns the date format for Unix-like systems
 func getUnixDateFormat() string {
-	// TODO: Implement Unix-specific date format detection
-	// For now, return a default format
+	// Returns ISO 8601 format (YYYY-MM-DD)
 	return "2006-01-02"
 }
 
